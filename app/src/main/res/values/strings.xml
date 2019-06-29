@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">FYP</string>
+    <string name="registration_username">Username</string>
+    <string name="registration_email">Email</string>
+    <string name="registration_password">Password</string>
+    <string name="registration_registerBtn">Register</string>
+    <string name="registration_existingAccount">Already have an account?</string>
+    <string name="login_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_loginBtn">Login</string>
+    <string name="login_noAccount">Create Account</string>
 </resources>
