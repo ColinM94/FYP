@@ -1,12 +1,13 @@
 <resources>
-    <string name="app_name">FYP</string>
-    <string name="registration_username">Username</string>
-    <string name="registration_email">Email</string>
-    <string name="registration_password">Password</string>
-    <string name="registration_registerBtn">Register</string>
-    <string name="registration_existingAccount">Already have an account?</string>
+    <string name="app_name">Carers App</string>
+    <string name="register_name">Full Name</string>
+    <string name="register_email">Email</string>
+    <string name="register_password">Password</string>
+    <string name="register_registerBtn">Register</string>
+    <string name="register_existingAccount">Already have an account?</string>
     <string name="login_email">Email</string>
     <string name="login_password">Password</string>
     <string name="login_loginBtn">Login</string>
     <string name="login_noAccount">Create Account</string>
+    <string name="select_photo">Select Photo</string>
 </resources>
