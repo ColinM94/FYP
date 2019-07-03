@@ -1,4 +1,4 @@
-package com.example.fyp
+package com.colinmaher.carersapp
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
-        assertEquals("com.example.fyp", appContext.packageName)
+        assertEquals("com.colinmaher.carersapp", appContext.packageName)
     }
 }

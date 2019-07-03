@@ -1,4 +1,4 @@
-package com.example.fyp
+package com.colinmaher.carersapp
 
 import org.junit.Test
 

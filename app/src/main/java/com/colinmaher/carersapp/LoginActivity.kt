@@ -1,4 +1,4 @@
-package com.example.fyp
+package com.colinmaher.carersapp
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -49,7 +49,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
             .addOnFailureListener {
-                Log.d("Debug", "Failed to create user: ${it.message}")
+                Log.d("Debug", "${it.message}")
                 Toast.makeText(this, "${it.message}", Toast.LENGTH_SHORT).show()
             }
     }

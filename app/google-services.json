@@ -8,6 +8,35 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:128407070115:android:121e04806f9aa4ef",
+        "android_client_info": {
+          "package_name": "com.colinmaher.carersapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "128407070115-ooti3urc3kn3evd8fckt3u241tfh2cp4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyCjpQNCMDTAFLJ90C_lj3w1owvjVGH_E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "128407070115-ooti3urc3kn3evd8fckt3u241tfh2cp4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:128407070115:android:f51375dfd0351342",
         "android_client_info": {
           "package_name": "com.example.fyp"
