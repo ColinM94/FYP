@@ -10,11 +10,13 @@ import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
 
+    private val user = FirebaseAuth.getInstance().currentUser
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        Log.d("Debug", "Login activity")
+        Log.d("Debug", "Login activity started")
 
         button_login_loginBtn.setOnClickListener {
             login()
@@ -33,24 +35,43 @@ class LoginActivity : AppCompatActivity() {
 
         if(email.isEmpty() || password.isEmpty()){
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+            Log.d("Debug", "All fields not filled")
+
             return
         }
 
         Log.d("Debug", "Attempting to log in with email: $email & password: $password")
 
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+        val user = FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (!it.isSuccessful) {
                     return@addOnCompleteListener
-                } else {
-                    Log.d("Debug", "Login Successful: ${it.result?.user?.uid}")
-                    val intent = Intent(this, HomeActivity::class.java)
-                    startActivity(intent)
+                }
+                else if(user?.isEmailVerified == false){
+                        verifyEmail()
+                }
+                else{
+                        Log.d("Debug", "Login Successful: ${it.result?.user?.uid}")
+                        val intent = Intent(this, HomeActivity::class.java)
+                        startActivity(intent)
                 }
             }
             .addOnFailureListener {
                 Log.d("Debug", "${it.message}")
                 Toast.makeText(this, "${it.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun verifyEmail()
+    {
+        user?.sendEmailVerification()
+            ?.addOnSuccessListener {
+                Toast.makeText(this, "Verify email to log in. Email sent to ${user.email}", Toast.LENGTH_SHORT).show()
+                Log.d("Debug", "Verification email sent to ${user.email}")
+            }
+            ?.addOnFailureListener {
+                Toast.makeText(this, "Verification email failed to send. ${it.message}", Toast.LENGTH_SHORT).show()
+                Log.d("Debug", "Verification email failed to send ${it.message}")
             }
     }
 

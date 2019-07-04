@@ -20,7 +20,7 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registration)
 
-        Log.d("Debug", "Register activity")
+        Log.d("Debug", "Register activity started")
 
         button_register_selectphoto.setOnClickListener {
             selectPhoto()
@@ -67,6 +67,7 @@ class RegisterActivity : AppCompatActivity() {
         val email = edittext_register_email.text.toString()
         val password = edittext_register_password.text.toString()
 
+        // Prevents registration if any fields are empty.
         if(username.isEmpty() || email.isEmpty() || password.isEmpty()){
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             return
@@ -78,11 +79,14 @@ class RegisterActivity : AppCompatActivity() {
             .addOnCompleteListener {
                 if (!it.isSuccessful) {
                     return@addOnCompleteListener
-                } else {
+                }
+                else {
                     Log.d("Debug", "Successfully created user with uid: ${it.result?.user?.uid}")
                     Toast.makeText(this, "Account created", Toast.LENGTH_SHORT).show()
 
                     uploadImage()
+
+                    saveUserToDatabase(it.toString())
 
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
@@ -107,8 +111,6 @@ class RegisterActivity : AppCompatActivity() {
 
             ref.downloadUrl.addOnSuccessListener{
                     Log.d("Debug", "File location: $it")
-
-                    saveUserToDatabase(it.toString())
                 }
             }
             .addOnFailureListener {
