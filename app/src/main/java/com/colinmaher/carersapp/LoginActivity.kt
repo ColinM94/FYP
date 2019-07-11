@@ -16,13 +16,17 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        Log.d("Debug", "Login activity started")
+        log("Login activity started")
 
-        button_login_loginBtn.setOnClickListener {
+        // Test code.
+        edittext_login_email.setText("colinmaher94@gmail.com")
+        edittext_login_password.setText("password")
+
+        button_login_login.setOnClickListener {
             login()
         }
 
-        textView_login_noAccount.setOnClickListener{
+        textView_login_noaccount.setOnClickListener{
             noAccount()
         }
     }
@@ -30,55 +34,70 @@ class LoginActivity : AppCompatActivity() {
     // Handles user login.
     private fun login()
     {
-        val email = editText_login_email.text.toString()
-        val password = editText_login_password.text.toString()
+        val email = edittext_login_email.text.toString()
+        val password = edittext_login_password.text.toString()
 
         if(email.isEmpty() || password.isEmpty()){
-            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
-            Log.d("Debug", "All fields not filled")
+            toast("Please fill in all fields")
+            log("All fields not filled")
 
             return
         }
 
-        Log.d("Debug", "Attempting to log in with email: $email & password: $password")
+        log("Attempting to log in with email: $email & password: $password")
 
-        val user = FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (!it.isSuccessful) {
                     return@addOnCompleteListener
-                }
-                else if(user?.isEmailVerified == false){
-                        verifyEmail()
-                }
-                else{
-                        Log.d("Debug", "Login Successful: ${it.result?.user?.uid}")
-                        val intent = Intent(this, HomeActivity::class.java)
-                        startActivity(intent)
+                } else if(user?.isEmailVerified == false){
+                    log("Email not verified")
+                    verifyEmail()
+                } else {
+                    log("Login Successful: ${it.result?.user?.uid}")
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
                 }
             }
             .addOnFailureListener {
-                Log.d("Debug", "${it.message}")
-                Toast.makeText(this, "${it.message}", Toast.LENGTH_SHORT).show()
+                log("${it.message}")
+                toast("${it.message}")
             }
     }
 
+    // Firebase email verification.
     private fun verifyEmail()
     {
+        if(user?.isEmailVerified == true)
+            return
+
         user?.sendEmailVerification()
             ?.addOnSuccessListener {
-                Toast.makeText(this, "Verify email to log in. Email sent to ${user.email}", Toast.LENGTH_SHORT).show()
-                Log.d("Debug", "Verification email sent to ${user.email}")
+                toast("Please verify email to log in. Verification email sent to ${user.email}")
+                log("Verification email sent to ${user.email}")
             }
             ?.addOnFailureListener {
-                Toast.makeText(this, "Verification email failed to send. ${it.message}", Toast.LENGTH_SHORT).show()
-                Log.d("Debug", "Verification email failed to send ${it.message}")
+                toast("Verification email failed to send. ${it.message}")
+                log("Verification email failed to send ${it.message}")
             }
     }
 
-    // Changes to registration activity.
+    // Opens registration activity.
     private fun noAccount()
     {
         val intent = Intent(this, RegisterActivity::class.java)
         startActivity(intent)
+    }
+
+    // Writes debug messages to Logcat.
+    private fun log(msg: String)
+    {
+        Log.d("Debug", msg)
+    }
+
+    // Creates Toast messages to display to user.
+    private fun toast(msg: String)
+    {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 }

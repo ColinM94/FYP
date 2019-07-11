@@ -30,7 +30,7 @@ class RegisterActivity : AppCompatActivity() {
             register()
         }
 
-        textView_register_existingAccount.setOnClickListener{
+        textview_register_existingaccount.setOnClickListener{
             existingAccount()
         }
     }
@@ -137,8 +137,6 @@ class RegisterActivity : AppCompatActivity() {
                 Log.d("Debug", "${it.message}")
             }
     }
-
-    class User(val uid: String, val name: String, val profileImageUrl: String)
 
     private fun existingAccount()
     {
