@@ -3,47 +3,14 @@ package com.colinmaher.carersapp
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.colinmaher.carersapp.fragments.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 
-class MainActivity : AppCompatActivity() {
-
+class MainActivity : AppCompatActivity(){
     private val manager = supportFragmentManager
-
-    //private lateinit var textMessage: TextView
-    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            R.id.navigation_calls -> {
-                //textMessage.setText(R.string.title_home)
-                createFragment("calls")
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_clients -> {
-                //textMessage.setText(R.string.title_home)
-                createFragment("clients")
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_chat -> {
-                //textMessage.setText(R.string.title_home)
-                createFragment("chat")
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_profile -> {
-                //textMessage.setText(R.string.title_home)
-                createFragment("profile")
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_settings -> {
-                //textMessage.setText(R.string.title_home)
-                createFragment("preferences")
-                return@OnNavigationItemSelectedListener true
-            }
-        }
-        false
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,16 +19,40 @@ class MainActivity : AppCompatActivity() {
         val actionBar = supportActionBar
         actionBar!!.title = "Carers App"
 
-        createFragment("home")
+        createFragment("calls")
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
-
-        Log.d("Debug", "Home activity started")
 
         // Check if user logged in.
         verifyUserLogin()
 
         navView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
+    }
+
+    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        when (item.itemId) {
+            R.id.navigation_calls -> {
+                createFragment("calls")
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_clients -> {
+                createFragment("clients")
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_chat -> {
+                createFragment("chat")
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_profile -> {
+                createFragment("profile")
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_settings -> {
+                createFragment("preferences")
+                return@OnNavigationItemSelectedListener true
+            }
+        }
+        false
     }
 
     private fun createFragment(option:String){
@@ -76,7 +67,6 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        transaction.addToBackStack(null)
         transaction.commit()
     }
 
@@ -87,6 +77,13 @@ class MainActivity : AppCompatActivity() {
 
         if(uid == null){
             signOut()
+        }
+    }
+
+    // Handles requests from fragments. Should be replaced with interfaces or ViewModel.
+    fun fragmentMessage(option:String) {
+        when(option){
+            "signOut" -> signOut()
         }
     }
 

@@ -29,16 +29,18 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        loginMsg()
+        //loginMsg()
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_calls, container, false)
     }
-
+/*(
     private fun loginMsg()
     {
+
         //val name = ""
         val uid = FirebaseAuth.getInstance().uid ?: ""
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+
 
         ref.child("name").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -49,6 +51,7 @@ class HomeFragment : Fragment() {
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
+    */
 }
 
 

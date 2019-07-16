@@ -15,7 +15,6 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="welcome">Welcome</string>
 
     <!-- navbar -->
     <string name="navbar_calls">Calls</string>
@@ -25,6 +24,5 @@
     <string name="navbar_settings">Settings</string>
 
     <!-- Fragments -->
-    <string name="home_msg">Welcome, %1$s!</string>
     <string name="settings_signOut">Sign Out</string>
 </resources>

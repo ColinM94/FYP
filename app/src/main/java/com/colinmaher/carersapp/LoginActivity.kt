@@ -55,7 +55,9 @@ class LoginActivity : AppCompatActivity() {
                     verifyEmail()
                 } else {
                     log("Login Successful: ${it.result?.user?.uid}")
+
                     val intent = Intent(this, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK) // Clears back stack. Prevents returning to login using back button.
                     startActivity(intent)
                 }
             }
