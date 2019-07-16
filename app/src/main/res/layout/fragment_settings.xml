@@ -5,14 +5,14 @@
                 android:layout_height="match_parent"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:background="@color/background"
-                tools:context=".Fragments.SettingsFragment">
+                tools:context=".fragments.SettingsFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/textview_map_msg"
-            android:text="@string/settings_msg"/>
+            android:text="@string/navbar_settings"/>
 
 
     <ListView
@@ -25,14 +25,10 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-            android:text="@string/settings_signoutbtn"
+            android:text="@string/settings_signOut"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_alignParentBottom="true"
             android:id="@+id/button_settings_signout"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

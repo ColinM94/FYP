@@ -18,14 +18,13 @@
     <string name="welcome">Welcome</string>
 
     <!-- navbar -->
-    <string name="navbar_home">Home</string>
-    <string name="navbar_map">Map</string>
+    <string name="navbar_calls">Calls</string>
+    <string name="navbar_clients">Clients</string>
+    <string name="navbar_chat">Chat</string>
+    <string name="navbar_profile">Profile</string>
     <string name="navbar_settings">Settings</string>
 
     <!-- Fragments -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home_msg">Welcome, %1$s!</string>
-    <string name="map_msg">Map</string>
-    <string name="settings_msg">Settings</string>
-    <string name="settings_signoutbtn">Sign Out</string>
+    <string name="settings_signOut">Sign Out</string>
 </resources>

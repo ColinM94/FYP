@@ -6,15 +6,8 @@ import android.util.Log
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
-import com.colinmaher.carersapp.Fragments.HomeFragment
-import com.colinmaher.carersapp.Fragments.MapFragment
-import com.colinmaher.carersapp.Fragments.SettingsFragment
+import com.colinmaher.carersapp.fragments.*
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.activity_home_old.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,19 +16,29 @@ class MainActivity : AppCompatActivity() {
     //private lateinit var textMessage: TextView
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
-            R.id.navigation_home -> {
+            R.id.navigation_calls -> {
                 //textMessage.setText(R.string.title_home)
-                createFragment("home")
+                createFragment("calls")
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_map -> {
-                //textMessage.setText(R.string.title_dashboard)
-                createFragment("map")
+            R.id.navigation_clients -> {
+                //textMessage.setText(R.string.title_home)
+                createFragment("clients")
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_notifications -> {
-                //textMessage.setText(R.string.title_notifications)
-                createFragment("settings")
+            R.id.navigation_chat -> {
+                //textMessage.setText(R.string.title_home)
+                createFragment("chat")
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_profile -> {
+                //textMessage.setText(R.string.title_home)
+                createFragment("profile")
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_settings -> {
+                //textMessage.setText(R.string.title_home)
+                createFragment("preferences")
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -65,9 +68,12 @@ class MainActivity : AppCompatActivity() {
         val transaction = manager.beginTransaction()
 
         when(option){
-            "home" -> transaction.replace(R.id.fragmentholder, HomeFragment())
-            "map" -> transaction.replace(R.id.fragmentholder, MapFragment())
-            "settings" -> transaction.replace(R.id.fragmentholder, SettingsFragment())
+            "calls" -> transaction.replace(R.id.fragmentholder, HomeFragment())
+            "clients" -> transaction.replace(R.id.fragmentholder, ClientsFragment())
+            "messenger" -> transaction.replace(R.id.fragmentholder, ChatFragment())
+            "profile" -> transaction.replace(R.id.fragmentholder, ProfileFragment())
+            "preferences" -> transaction.replace(R.id.fragmentholder, SettingsFragment())
+
         }
 
         transaction.addToBackStack(null)
