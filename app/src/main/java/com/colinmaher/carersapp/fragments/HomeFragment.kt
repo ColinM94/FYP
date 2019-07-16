@@ -1,8 +1,7 @@
-package com.colinmaher.carersapp.Fragments
+package com.colinmaher.carersapp.fragments
 
 
 import android.os.Bundle
-import android.provider.Settings.Global.getString
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,8 +12,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.activity_home_old.*
-import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_calls.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -33,7 +31,7 @@ class HomeFragment : Fragment() {
     ): View? {
         loginMsg()
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        return inflater.inflate(R.layout.fragment_calls, container, false)
     }
 
     private fun loginMsg()
@@ -45,7 +43,7 @@ class HomeFragment : Fragment() {
         ref.child("name").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val msg = getString(R.string.home_msg, snapshot.value.toString())
-                textview_home_msg.text = msg
+                textview_calls_msg?.text = msg
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}

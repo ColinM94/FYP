@@ -4,13 +4,13 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:background="@color/background"
-             tools:context=".Fragments.MapFragment">
+             tools:context=".fragments.ClientsFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/textview_map_msg"
-            android:text="@string/map_msg"/>
+            android:id="@+id/textview_clients_msg"
+            android:text="@string/navbar_clients"/>
 
 </RelativeLayout>

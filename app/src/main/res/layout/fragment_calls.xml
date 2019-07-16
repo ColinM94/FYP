@@ -4,14 +4,14 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:background="@color/background"
-             tools:context=".Fragments.HomeFragment">
+             tools:context=".fragments.HomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/home_msg"
-            android:id="@+id/textview_home_msg"
+            android:text="@string/navbar_calls"
+            android:id="@+id/textview_calls_msg"
     />
 
 </RelativeLayout>
