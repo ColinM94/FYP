@@ -25,4 +25,8 @@
 
     <!-- Fragments -->
     <string name="settings_signOut">Sign Out</string>
+
+    <!-- Testing -->
+    <string name="description">description</string>
+    <string name="title">title</string>
 </resources>

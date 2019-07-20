@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.preference.PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Preference
             android:key="signOut"
             android:title="@string/settings_signOut"
-            android:icon="@drawable/ic_settings_logout"
+            android:icon="@drawable/ic_settings_signout_24dp"
     />
 
 </androidx.preference.PreferenceScreen>

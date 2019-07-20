@@ -14,10 +14,8 @@ class MainActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        val actionBar = supportActionBar
-        actionBar!!.title = "Carers App"
+        setContentView(R.layout.activity_main)
 
         createFragment("calls")
 
@@ -59,9 +57,9 @@ class MainActivity : AppCompatActivity(){
         val transaction = manager.beginTransaction()
 
         when(option){
-            "calls" -> transaction.replace(R.id.fragmentholder, HomeFragment())
+            "calls" -> transaction.replace(R.id.fragmentholder, CallsFragment())
             "clients" -> transaction.replace(R.id.fragmentholder, ClientsFragment())
-            "messenger" -> transaction.replace(R.id.fragmentholder, ChatFragment())
+            "chat" -> transaction.replace(R.id.fragmentholder, ChatFragment())
             "profile" -> transaction.replace(R.id.fragmentholder, ProfileFragment())
             "preferences" -> transaction.replace(R.id.fragmentholder, SettingsFragment())
 
