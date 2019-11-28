@@ -1,41 +1,49 @@
 package com.colinmaher.carersapp
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+//import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_signin.*
+import com.colinmaher.extensions.log
+import com.colinmaher.extensions.toast
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_login.*
 
-class LoginActivity : AppCompatActivity() {
+
+class SigninActivity : AppCompatActivity(){
 
     private val user = FirebaseAuth.getInstance().currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContentView(R.layout.activity_signin)
 
-        log("Login activity started")
+        // ---------------------------------------
+        //         Test code
+            edittext_signin_email.setText("colinmaher94@gmail.com")
+            edittext_signin_password.setText("password")
+            signin()
+        // --------------------------------------
 
-        // Test code.
-        edittext_login_email.setText("colinmaher94@gmail.com")
-        edittext_login_password.setText("password")
 
-        button_login_login.setOnClickListener {
-            login()
+        button_signin_signin.setOnClickListener {
+            signin()
         }
 
-        textView_login_noaccount.setOnClickListener{
+        textview_signin_noaccount.setOnClickListener{
             noAccount()
         }
     }
 
-    // Handles user login.
-    private fun login()
+    // Handles user signin.
+    private fun signin()
     {
-        val email = edittext_login_email.text.toString()
-        val password = edittext_login_password.text.toString()
+
+        showSpinner()
+
+        val email = edittext_signin_email.text.toString()
+        val password = edittext_signin_password.text.toString()
 
         if(email.isEmpty() || password.isEmpty()){
             toast("Please fill in all fields")
@@ -49,15 +57,17 @@ class LoginActivity : AppCompatActivity() {
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (!it.isSuccessful) {
+                    hideSpinner()
                     return@addOnCompleteListener
                 } else if(user?.isEmailVerified == false){
+                    hideSpinner()
                     log("Email not verified")
                     verifyEmail()
                 } else {
-                    log("Login Successful: ${it.result?.user?.uid}")
+                    log("Signin Successful: ${it.result?.user?.uid}")
 
                     val intent = Intent(this, MainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK) // Clears back stack. Prevents returning to login using back button.
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK) // Clears back stack. Prevents returning to signin using back button.
                     startActivity(intent)
                 }
             }
@@ -66,6 +76,8 @@ class LoginActivity : AppCompatActivity() {
                 toast("${it.message}")
             }
     }
+
+
 
     // Firebase email verification.
     private fun verifyEmail()
@@ -84,22 +96,19 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-    // Opens registration activity.
+    // Opens Signup activity.
     private fun noAccount()
     {
-        val intent = Intent(this, RegisterActivity::class.java)
+        val intent = Intent(this, SignupActivity::class.java)
         startActivity(intent)
     }
 
-    // Writes debug messages to Logcat.
-    private fun log(msg: String)
-    {
-        Log.d("Debug", msg)
+    // Loading spinner.
+    private fun showSpinner(){
+        progressbar_signin_spinner.visibility = View.VISIBLE
     }
 
-    // Creates Toast messages to display to user.
-    private fun toast(msg: String)
-    {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    private fun hideSpinner(){
+        progressbar_signin_spinner.visibility = View.INVISIBLE
     }
 }

@@ -11,7 +11,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/textview_map_msg"
-            android:text="@string/navbar_settings"/>
+            android:text="@string/navigation_settings"/>
 
 
     <ListView

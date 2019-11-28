@@ -1,19 +1,42 @@
 package com.colinmaher.carersapp.fragments
 
 import android.os.Bundle
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
-import com.colinmaher.carersapp.MainActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.colinmaher.carersapp.R
+import kotlinx.android.synthetic.main.fragment_settings.*
 
-class SettingsFragment : PreferenceFragmentCompat() {
-
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        addPreferencesFromResource(R.xml.preferences)
+class SettingsFragment : Fragment() {
+    companion object {
+        private const val STATE_CLICKS = "clicks"
     }
 
-    override fun onPreferenceTreeClick(preference: Preference): Boolean {
-        (activity as MainActivity).fragmentMessage(preference.key)
-        return true
+    private var clicks = 0
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_settings, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        if (savedInstanceState != null) {
+            clicks = savedInstanceState.getInt(STATE_CLICKS)
+        }
+
+
+        // Initialize our text
+        setCountText()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(STATE_CLICKS, clicks)
+    }
+
+    private fun setCountText() {
+        //count_text.text = context?.resources?.getQuantityString(R.plurals.count_text, clicks, clicks)
     }
 }

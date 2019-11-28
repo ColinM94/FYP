@@ -5,7 +5,7 @@
     <Preference
             android:key="signOut"
             android:title="@string/settings_signOut"
-            android:icon="@drawable/ic_settings_signout_24dp"
+            android:icon="@drawable/settings_signout_24dp"
     />
 
 </androidx.preference.PreferenceScreen>

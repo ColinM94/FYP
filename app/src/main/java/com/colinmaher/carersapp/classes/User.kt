@@ -1,3 +1,11 @@
 package com.colinmaher.carersapp.classes
 
-class User(val uid: String, val name: String, val profileImageUrl: String)
+import java.io.Serializable
+
+
+data class User(
+    var uid: String = "",
+    val name: String = "") : Serializable
+
+
+

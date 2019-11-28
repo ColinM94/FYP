@@ -1,14 +1,18 @@
 <resources>
     <string name="app_name">Carers App</string>
-    <string name="register_name">Full Name</string>
-    <string name="register_email">Email</string>
-    <string name="register_password">Password</string>
-    <string name="register_registerBtn">Register</string>
-    <string name="register_existingAccount">Already have an account?</string>
-    <string name="login_email">Email</string>
-    <string name="login_password">Password</string>
-    <string name="login_loginBtn">Login</string>
-    <string name="login_noAccount">Create Account</string>
+    
+    <!-- Signup -->
+    <string name="signup_name">Name</string>
+    <string name="signup_email">Email</string>
+    <string name="signup_password">Password</string>
+    <string name="signup_signup">Sign Up</string>
+    <string name="signup_existingaccount">Already have an account?</string>
+    
+    <!-- Signin -->
+    <string name="signin_email">Email</string>
+    <string name="signin_password">Password</string>
+    <string name="signin_signin">Sign In</string>
+    <string name="signin_noaccount">Create Account</string>
     <string name="select_photo">Select Photo</string>
 
     <string name="title_activity_main">MainActivity</string>
@@ -16,15 +20,17 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
 
-    <!-- navbar -->
-    <string name="navbar_calls">Calls</string>
-    <string name="navbar_clients">Clients</string>
-    <string name="navbar_chat">Chat</string>
-    <string name="navbar_profile">Profile</string>
-    <string name="navbar_settings">Settings</string>
+    <!-- navigation -->
+    <string name="navigation_visits">Visits</string>
+    <string name="navigation_clients">Clients</string>
+    <string name="navigation_profile">Profile</string>
+    <string name="navigation_settings">Settings</string>
 
     <!-- Fragments -->
     <string name="settings_signOut">Sign Out</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Profile</string>
 
     <!-- Testing -->
     <string name="description">description</string>
