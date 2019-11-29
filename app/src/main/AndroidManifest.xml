@@ -25,5 +25,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+                android:name=".SenderActivity"
+                android:label="NFC">
+        </activity>
     </application>
 </manifest>

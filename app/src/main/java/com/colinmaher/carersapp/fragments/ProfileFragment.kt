@@ -1,42 +1,39 @@
 package com.colinmaher.carersapp.fragments
 
+import android.app.PendingIntent
+import android.content.Intent
+import android.nfc.NdefMessage
+import android.nfc.NfcAdapter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.colinmaher.carersapp.MainActivity
 import com.colinmaher.carersapp.R
+import com.colinmaher.carersapp.helpers.log
+import com.colinmaher.carersapp.helpers.toast
+import com.colinmaher.carersapp.models.User
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 class ProfileFragment : Fragment() {
-    companion object {
-        private const val STATE_CLICKS = "clicks"
-    }
-
-    private var clicks = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onStart() {
+        super.onStart()
 
-        if (savedInstanceState != null) {
-            clicks = savedInstanceState.getInt(STATE_CLICKS)
-        }
-
-
-        // Initialize our text
-        setCountText()
+        (activity as MainActivity).getUserData()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(STATE_CLICKS, clicks)
-    }
+    fun loadValues(user : User){
 
-    private fun setCountText() {
-        //count_text.text = context?.resources?.getQuantityString(R.plurals.count_text, clicks, clicks)
+        edittext_profile_name.setText(user.name)
+        edittext_profile_role.setText(user.role)
     }
 }
+

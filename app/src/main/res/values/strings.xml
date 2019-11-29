@@ -1,13 +1,15 @@
 <resources>
     <string name="app_name">Carers App</string>
-    
+
+    <string name="title_activity_main">MainActivity</string>
+
     <!-- Signup -->
     <string name="signup_name">Name</string>
     <string name="signup_email">Email</string>
     <string name="signup_password">Password</string>
     <string name="signup_signup">Sign Up</string>
     <string name="signup_existingaccount">Already have an account?</string>
-    
+
     <!-- Signin -->
     <string name="signin_email">Email</string>
     <string name="signin_password">Password</string>
@@ -15,24 +17,34 @@
     <string name="signin_noaccount">Create Account</string>
     <string name="select_photo">Select Photo</string>
 
-    <string name="title_activity_main">MainActivity</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-
-    <!-- navigation -->
+    <!-- Navigation -->
     <string name="navigation_visits">Visits</string>
     <string name="navigation_clients">Clients</string>
     <string name="navigation_profile">Profile</string>
     <string name="navigation_settings">Settings</string>
 
-    <!-- Fragments -->
-    <string name="settings_signOut">Sign Out</string>
+    <!-- Visits -->
+    <string name="visits_title">Visits</string>
+
+    <!-- Visit -->
+
 
     <!-- Profile -->
     <string name="profile_title">Profile</string>
+    <string name="profile_email">Email</string>
+    <string name="profile_name">Name</string>
+
+    <!-- Clients -->
+    <string name="clients_title">Clients</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_signout">Sign Out</string>
+
 
     <!-- Testing -->
     <string name="description">description</string>
     <string name="title">title</string>
+
+
 </resources>

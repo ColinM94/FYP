@@ -1,405 +1,114 @@
 package com.colinmaher.carersapp
 
-import android.os.Bundle
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import com.colinmaher.carersapp.fragments.ClientsFragment
-import com.colinmaher.carersapp.fragments.VisitsFragment
-import com.colinmaher.extensions.log
-import com.colinmaher.extensions.toast
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.activity_main.*
-
-class MainActivity : AppCompatActivity() {
-    companion object {
-        private const val STATE_HELPER = "helper"
-    }
-
-    private lateinit var stateHelper: FragmentStateHelper
-
-    private val fragments = mutableMapOf<Int, Fragment>()
-
-    private val navigationSelectionListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-
-        val newFragment = if(fragments[item.itemId] != null){
-            fragments[item.itemId] ?: VisitsFragment()
-        }else{
-            VisitsFragment()
-        }
-        fragments[item.itemId] = newFragment
-
-        if (navigation.selectedItemId != 0) {
-            log("NAV LISTENER: Saving Current State Fragment: $newFragment | Item: ${item.itemId} ")
-            saveCurrentState()
-            stateHelper.restoreState(newFragment, item.itemId)
-
-        }
-
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.container, newFragment)
-            .commitNowAllowingStateLoss()
-
-        true
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        stateHelper = FragmentStateHelper(supportFragmentManager)
-
-        navigation.setOnNavigationItemSelectedListener(navigationSelectionListener)
-
-        if (savedInstanceState == null) {
-            navigation.selectedItemId = R.id.navigation_visits
-        } else {
-            val helperState = savedInstanceState.getBundle(STATE_HELPER)
-            stateHelper.restoreHelperState(helperState)
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        // Make sure we save the current tab's state too!
-        saveCurrentState()
-
-        outState.putBundle(STATE_HELPER, stateHelper.saveHelperState())
-
-        super.onSaveInstanceState(outState)
-    }
-
-    private fun saveCurrentState() {
-        fragments[navigation.selectedItemId]?.let { oldFragment->
-            stateHelper.saveState(oldFragment, navigation.selectedItemId)
-        }
-    }
-}
-
-
-/*
-//val newFragment = VisitsFragment()
-        log(item.itemId.toString())
-
-
-        when(item.itemId){
-            R.id.navigation_clients -> {
-                saveCurrentState()
-                stateHelper.restoreState(VisitsFragment(), item.itemId)
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, VisitsFragment())
-                    .commitNowAllowingStateLoss()
-            }
-            R.id.navigation_visits -> {
-                saveCurrentState()
-                stateHelper.restoreState(VisitsFragment(), item.itemId)
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, VisitsFragment())
-                    .commitNowAllowingStateLoss()
-            }
-            R.id.navigation_profile -> {
-                saveCurrentState()
-                stateHelper.restoreState(VisitsFragment(), item.itemId)
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, VisitsFragment())
-                    .commitNowAllowingStateLoss()
-            }
-            R.id.navigation_settings -> {
-                saveCurrentState()
-                stateHelper.restoreState(SettingsFragment(), item.itemId)
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, SettingsFragment())
-                    .commitNowAllowingStateLoss()
-            }
-            else -> {
-                saveCurrentState()
-                stateHelper.restoreState(VisitsFragment(), item.itemId)
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, VisitsFragment())
-                    .commitNowAllowingStateLoss()
-            }
-        }
-
-        true
-    }
-
-    override fun onCreate(savedInstanceState: Bundle) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        stateHelper = FragmentStateHelper(supportFragmentManager)
-
-        navigation.setOnNavigationItemSelectedListener(navigationSelectionListener)
-
-        val helperState = savedInstanceState.getBundle(STATE_HELPER)
-        stateHelper.restoreHelperState(helperState)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        // Make sure we save the current tab's state too!
-        saveCurrentState()
-
-        outState.putBundle(STATE_HELPER, stateHelper.saveHelperState())
-
-        super.onSaveInstanceState(outState)
-    }
-
-    private fun saveCurrentState() {
-        fragments[navigation.selectedItemId]?.let { oldFragment->
-            stateHelper.saveState(oldFragment, navigation.selectedItemId)
-        }
-    }
-}
-
-
-
-/*package com.colinmaher.carersapp
-
+import android.app.PendingIntent
 import android.content.Intent
+import android.net.Uri
+import android.nfc.NdefMessage
+import android.nfc.NfcAdapter
 import android.os.Bundle
+import android.util.Log
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import com.colinmaher.carersapp.fragments.*
-import log
-import toast
+import androidx.fragment.app.FragmentTransaction
+import com.colinmaher.carersapp.fragments.ClientsFragment
+import com.colinmaher.carersapp.fragments.ProfileFragment
+import com.colinmaher.carersapp.fragments.SettingsFragment
+import com.colinmaher.carersapp.fragments.VisitsFragment
+import com.colinmaher.carersapp.helpers.log
+import com.colinmaher.carersapp.helpers.toast
+import com.colinmaher.carersapp.interfaces.SettingsInterface
+import com.colinmaher.carersapp.models.User
+import com.colinmaher.carersapp.models.Visit
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_clients.*
+import kotlin.math.log
 
 class MainActivity : AppCompatActivity(){
+    private val TAG = "Main"
 
-    //private val manager = supportFragmentManager
+    // Firebase
     private val db = FirebaseFirestore.getInstance()
-    private var firebaseAuth = FirebaseAuth.getInstance()
-    private var userInfo = null
+    private val currentUser = FirebaseAuth.getInstance().currentUser!!.uid
 
-    lateinit var callsFragment: CallsFragment
-    lateinit var chatFragment : ChatFragment
+    // Fragments
+    private lateinit var visitsFragment: VisitsFragment
+    private lateinit var clientsFragment: ClientsFragment
+    private lateinit var profileFragment: ProfileFragment
+    private lateinit var settingsFragment: SettingsFragment
 
-    private val fragmentSavedStates = mutableMapOf<String, Fragment.SavedState?>()
-
-    //private
+    private var manager = supportFragmentManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
 
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
+        // Fragment initialisation.
+        visitsFragment = VisitsFragment()
+        clientsFragment = ClientsFragment()
+        profileFragment = ProfileFragment()
+        settingsFragment = SettingsFragment()
 
-        verifyUser()
+        navigation.setOnNavigationItemSelectedListener(navigationSelectionListener)
 
-        //navView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
-
-        //createFragments()
-        //callsFragment = CallsFragment().newInstance()
-       // chatFragment =
-
-        //loadData()
-
-        //createFragments()
-        //switchFragment("calls")
-
-        var int = 10
-        
-
-    }
-
-    private var authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
-        val user = firebaseAuth.currentUser
-
-        if(user != null) {
-            toast("Welcome")
-
-        }
-    }
-
-    override fun onStart(){
-        super.onStart()
-//        firebaseAuth.addAuthStateListener(authStateListener)
-
-    }
-
-    override fun onPause(){
-        super.onPause()
-        firebaseAuth.removeAuthStateListener(authStateListener)
-    }
-
-    private fun createFragments(){
-        supportFragmentManager.beginTransaction()
-            .add(R.id.fragmentholder, CallsFragment())
-            .add(R.id.fragmentholder, ClientsFragment())
-            .add(R.id.fragmentholder, ChatFragment())
-            .add(R.id.fragmentholder, ProfileFragment())
-            .add(R.id.fragmentholder, SettingsFragment())
+        // Initial fragment to load.
+        manager.beginTransaction()
+            .replace(R.id.container, visitsFragment)
+            //.addToBackStack(clientsFragment.toString())
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .commit()
 
+        log(currentUser)
 
     }
 
-    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            R.id.navigation_calls -> {
-                switchFragment("calls")
-
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_clients -> {
-                switchFragment("clients")
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_chat -> {
-                switchFragment("chat")
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_profile -> {
-                switchFragment("profile")
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_settings -> {
-                switchFragment("preferences")
-                return@OnNavigationItemSelectedListener true
-            }
-        }
-        false
+    override fun onResume() {
+        super.onResume()
+        val pendingIntent = PendingIntent.getActivity(this, 0, Intent(this, javaClass).addFlags(
+            Intent.FLAG_ACTIVITY_SINGLE_TOP), 0)
+        val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+        nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null)
     }
 
-    // Unloads fragments on switch.
-    private fun switchFragment(option:String){
-        val transaction = supportFragmentManager.beginTransaction()
-
-        when(option){
-            "calls" -> {
-                transaction.replace(R.id.fragmentholder, CallsFragment(), "CALLS_TAG")
-                    .addToBackStack("CALLS_TAG")
-            }
-
-            "clients" -> {
-                transaction.replace(R.id.fragmentholder, ClientsFragment(), "CLIENTS_TAG")
-                    .addToBackStack("CLIENTS_TAG")
-            }
-            "chat" -> {
-                transaction.replace(R.id.fragmentholder, ChatFragment(), "CHAT_FRAGMENT")
-                    .addToBackStack("CHAT_FRAGMENT")
-            }
-            "profile" -> {
-                transaction.replace(R.id.fragmentholder, ProfileFragment(), "PROFILE_FRAGMENT")
-                    .addToBackStack("PROFILE_FRAGMENT")
-
-            }
-            "preferences" -> {
-                transaction.replace(R.id.fragmentholder, SettingsFragment(), "PREFERENCES_FRAGMENT")
-                    .addToBackStack("PREFERENCES_FRAGMENT")
-            }
-        }
-
-        transaction.commit()
+    override fun onPause() {
+        super.onPause()
+        val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+        nfcAdapter.disableForegroundDispatch(this)
     }
 
-    // Keeps fragments loaded in the background.
-    private fun switchFragmentPersistent(option:String){
-        when(option){
-            "calls" -> {
-                if(supportFragmentManager.findFragmentByTag("calls") != null){
-                    log("Switching to calls")
-                    supportFragmentManager.beginTransaction().show(CallsFragment()).commit()
+    fun getUserData(){
+        val docRef = db.collection("users").document(currentUser)
 
-                }else {
-                    log("Creating calls")
-                    supportFragmentManager.beginTransaction().add(R.id.fragmentholder, CallsFragment(), "calls").commit()
-                }
-            }
-            "clients" -> {
-                if(supportFragmentManager.findFragmentByTag("clients") != null){
-                    supportFragmentManager.beginTransaction().show(ClientsFragment()).commit()
-                    log("Switching to clients")
+       // log("current user " + currentUser)
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
 
-                }else {
-                    log("Creating clients")
-                    supportFragmentManager.beginTransaction().add(R.id.fragmentholder, ClientsFragment(), "clients").commit()
-                }
-            }
-            "chat" -> {
-                if(supportFragmentManager.findFragmentByTag("chat") != null){
-                    log("Switching to chat")
-                    supportFragmentManager.beginTransaction().show(ChatFragment()).commit()
+                    if(document.data != null){
+                        var name = ""
+                        var role = ""
 
-                }else {
-                    log("Creating chat")
-                    supportFragmentManager.beginTransaction().add(R.id.fragmentholder, ChatFragment(), "chat").commit()
-                }
-            }
-            "profile" -> {
-                if(supportFragmentManager.findFragmentByTag("profile") != null){
-                    supportFragmentManager.beginTransaction().show(ProfileFragment()).commit()
+                        if(document.data!!["name"] != null ){
+                            name = document.data!!["name"] as String
+                        }
 
-                }else {
-                    supportFragmentManager.beginTransaction().add(R.id.fragmentholder, ProfileFragment(), "profile").commit()
-                }
-            }
-            "settings" -> {
-                if(supportFragmentManager.findFragmentByTag("settings") != null){
-                    supportFragmentManager.beginTransaction().show(SettingsFragment()).commit()
+                        if(document.data!!["role"] != null){
+                            role = document.data!!["role"] as String
+                        }
 
-                }else {
-                    supportFragmentManager.beginTransaction().add(R.id.fragmentholder, SettingsFragment(), "settings").commit()
-                }
-            }
-        }
+                        log("$role $name")
+                        val user = User(name, role)
+                        profileFragment.loadValues(user)
+                    }
 
-        if(option != "calls"){
-            supportFragmentManager.beginTransaction().detach(CallsFragment()).commit()
-            log("Hiding calls")
-        }
-
-        if(option != "clients"){
-            supportFragmentManager.beginTransaction().detach(ClientsFragment()).commit()
-            log("Hiding clients")
-        }
-
-        if(option != "chat"){
-            supportFragmentManager.beginTransaction().detach(ChatFragment()).commit()
-            log("Hiding chat")
-        }
-
-        if(option != "profile"){
-            supportFragmentManager.beginTransaction().detach(ProfileFragment()).commit()
-            log("Hiding profile")
-        }
-
-
-        if(option != "settings"){
-            supportFragmentManager.beginTransaction().detach(SettingsFragment()).commit()
-            log("Hiding settings")
-        }
-
-
-    }
-
-    // If user is not signed in, ends session and returns user to signin screen.
-    private fun verifyUser()
-    {
-        val uid = FirebaseAuth.getInstance().uid
-
-        if(uid == null){
-            signOut()
-        }
-    }
-
-    private fun loadData(){
-        log("Loading data")
-        db.collection("users")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    log("${document.id} => ${document.data}")
-
-
-                    //edittext_profile_name.setText()
+                } else {
+                    log("No such document")
                 }
             }
             .addOnFailureListener { e ->
-                log("Error getting users: $e")
+                log("get failed with $e")
             }
     }
 
@@ -420,19 +129,123 @@ class MainActivity : AppCompatActivity(){
             }
     }
 
-    // Handles requests from fragments. Should be replaced with interfaces or ViewModel.
-    fun fragmentMessage(option:String) {
-        when(option){
-            "signOut" -> signOut()
-        }
+    fun getVisits(){
+        log("$currentUser")
+        //var visits : MutableList<Visit>
+
+        var visits = mutableListOf<Visit>()
+
+        db.collection("visits/$currentUser/visits")
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+
+                    var name = document.data["name"] as String
+                    var town = document.data["town"] as String
+
+                    val visit = Visit(name, town)
+
+                    visits.add(visit)
+
+                }
+
+                visitsFragment.populateList(visits)
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "Error getting documents: ", exception)
+            }
     }
 
-    private fun signOut(){
+    fun signOut(){
         val intent = Intent(this, SigninActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK) // Clears back button stack.
         startActivity(intent)
 
         FirebaseAuth.getInstance().signOut()
     }
+
+
+    // Listens for navigation bar button presses.
+    private val navigationSelectionListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+
+        when ("$item") {
+            "Visits" -> {
+                log("Visits choses")
+                manager.beginTransaction()
+                    .replace(R.id.container, visitsFragment)
+                    //.addToBackStack(clientsFragment.toString())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit()
+            }
+            "Clients" -> {
+                log("Clients selected")
+                manager.beginTransaction()
+                    .replace(R.id.container, clientsFragment)
+                    //.addToBackStack(clientsFragment.toString())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit()
+            }
+            "Profile" -> {
+                manager.beginTransaction()
+                    .replace(R.id.container, profileFragment)
+                    //.addToBackStack(clientsFragment.toString())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit()
+
+            }
+            "Settings" -> {
+                manager.beginTransaction()
+                    .replace(R.id.container, settingsFragment)
+                    //.addToBackStack(clientsFragment.toString())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit()
+            }
+            else -> {
+
+            }
+        }
+       true
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent.action) {
+            toast("MESSAGE: ${intent.type}")
+            edittext_clients_search.setText(intent.type)
+            val rawMessage = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
+
+            if (rawMessage != null) {
+                val message = arrayOfNulls<NdefMessage?>(rawMessage.size)// Array<NdefMessage>(rawMessages.size, {})
+                for (i in rawMessage.indices) {
+                    message[i] = rawMessage[i] as NdefMessage
+                }
+                // Process the messages array.
+                processNdefMessages(message)
+            }
+        }
+    }
+
+    private fun processNdefMessages(ndefMessages: Array<NdefMessage?>) {
+        // Go through all NDEF messages found on the NFC tag
+        for (curMsg in ndefMessages) {
+            if (curMsg != null) {
+                // Print generic information about the NDEF message
+                log("Message " + curMsg.toString())
+                // The NDEF message usually contains 1+ records - print the number of recoreds
+                log("Records "+ curMsg.records.size.toString())
+
+                // Loop through all the records contained in the message
+                for (curRecord in curMsg.records) {
+                    if (curRecord.toUri() != null) {
+                        // URI NDEF Tag
+                        log("- URI " +  curRecord.toUri().toString())
+                    } else {
+                        // Other NDEF Tags - simply print the payload
+                        log("- Contents " +  curRecord.payload.contentToString())
+                    }
+                }
+            }
+        }
+    }
 }
-*/
+

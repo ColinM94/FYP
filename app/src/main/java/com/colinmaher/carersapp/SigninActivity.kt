@@ -6,8 +6,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 //import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_signin.*
-import com.colinmaher.extensions.log
-import com.colinmaher.extensions.toast
+import com.colinmaher.carersapp.helpers.log
+import com.colinmaher.carersapp.helpers.toast
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -23,7 +23,7 @@ class SigninActivity : AppCompatActivity(){
         //         Test code
             edittext_signin_email.setText("colinmaher94@gmail.com")
             edittext_signin_password.setText("password")
-            signin()
+           // signin()
         // --------------------------------------
 
 

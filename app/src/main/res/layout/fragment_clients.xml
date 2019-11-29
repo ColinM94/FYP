@@ -5,7 +5,7 @@
     <data>
         <variable
             name="name"
-            type="com.colinmaher.carersapp.classes.User"/>
+            type="com.colinmaher.carersapp.models.User"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,17 +17,17 @@
         <!-- TODO: Update blank fragment layout -->
 
         <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/textview_clients_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="@string/navigation_clients"
+                android:text="@string/clients_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-                android:id="@+id/edittext_profile_name"
+                android:id="@+id/edittext_clients_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
@@ -36,17 +36,17 @@
                 android:text=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                app:layout_constraintTop_toBottomOf="@+id/textview_clients_title" />
 
-        <TextView
-                android:id="@+id/textView3"
+        <Button
+                android:id="@+id/button2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:text="clients"
+                android:layout_marginTop="26dp"
+                android:text="Button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edittext_profile_name" />
+                app:layout_constraintTop_toBottomOf="@+id/edittext_clients_search" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
