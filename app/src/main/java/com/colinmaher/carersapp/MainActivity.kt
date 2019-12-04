@@ -2,36 +2,33 @@ package com.colinmaher.carersapp
 
 import android.app.PendingIntent
 import android.content.Intent
-import android.net.Uri
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import android.os.Bundle
-import android.util.Log
-import android.view.MenuItem
+import android.view.View
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
+import com.colinmaher.carersapp.extensions.log
+import com.colinmaher.carersapp.extensions.toast
 import com.colinmaher.carersapp.fragments.ClientsFragment
 import com.colinmaher.carersapp.fragments.ProfileFragment
 import com.colinmaher.carersapp.fragments.SettingsFragment
 import com.colinmaher.carersapp.fragments.VisitsFragment
-import com.colinmaher.carersapp.helpers.log
-import com.colinmaher.carersapp.helpers.toast
-import com.colinmaher.carersapp.interfaces.SettingsInterface
-import com.colinmaher.carersapp.models.User
-import com.colinmaher.carersapp.models.Visit
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_signin.*
 import kotlinx.android.synthetic.main.fragment_clients.*
-import kotlin.math.log
+import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity(){
-    private val TAG = "Main"
-
-    // Firebase
-    private val db = FirebaseFirestore.getInstance()
-    private val currentUser = FirebaseAuth.getInstance().currentUser!!.uid
 
     // Fragments
     private lateinit var visitsFragment: VisitsFragment
@@ -41,14 +38,17 @@ class MainActivity : AppCompatActivity(){
 
     private var manager = supportFragmentManager
 
+    private val db = FirebaseFirestore.getInstance()
+    private val currentUser = FirebaseAuth.getInstance().currentUser!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         // Fragment initialisation.
-        visitsFragment = VisitsFragment()
-        clientsFragment = ClientsFragment()
-        profileFragment = ProfileFragment()
+        visitsFragment = VisitsFragment(currentUser, db)
+        clientsFragment = ClientsFragment(currentUser, db)
+        profileFragment = ProfileFragment(currentUser, db)
         settingsFragment = SettingsFragment()
 
         navigation.setOnNavigationItemSelectedListener(navigationSelectionListener)
@@ -60,7 +60,10 @@ class MainActivity : AppCompatActivity(){
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .commit()
 
-        log(currentUser)
+        log(currentUser.uid)
+
+        //getResult()
+        //getUser()
 
     }
 
@@ -78,82 +81,18 @@ class MainActivity : AppCompatActivity(){
         nfcAdapter.disableForegroundDispatch(this)
     }
 
-    fun getUserData(){
-        val docRef = db.collection("users").document(currentUser)
-
-       // log("current user " + currentUser)
-        docRef.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-
-                    if(document.data != null){
-                        var name = ""
-                        var role = ""
-
-                        if(document.data!!["name"] != null ){
-                            name = document.data!!["name"] as String
-                        }
-
-                        if(document.data!!["role"] != null){
-                            role = document.data!!["role"] as String
-                        }
-
-                        log("$role $name")
-                        val user = User(name, role)
-                        profileFragment.loadValues(user)
-                    }
-
-                } else {
-                    log("No such document")
-                }
-            }
-            .addOnFailureListener { e ->
-                log("get failed with $e")
-            }
+    suspend fun getDocument(collectionName: String, docId: String) : DocumentSnapshot{
+        return db.collection(collectionName).document(docId).get().await()
     }
 
-    private fun getDocument(collection: String, docId: String){
-        log("Getting document $docId from $collection")
-        val docRef = db.collection(collection).document(docId)
-
-        docRef.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    log("DocumentSnapshot data: ${document.data}")
-                } else {
-                    log("No such document")
-                }
-            }
-            .addOnFailureListener { e ->
-                log("get failed with $e")
-            }
+    suspend fun getAllDocuments(collectionName: String) : QuerySnapshot {
+        return db.collection(collectionName).get().await()
     }
 
-    fun getVisits(){
-        log("$currentUser")
-        //var visits : MutableList<Visit>
 
-        var visits = mutableListOf<Visit>()
 
-        db.collection("visits/$currentUser/visits")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-
-                    var name = document.data["name"] as String
-                    var town = document.data["town"] as String
-
-                    val visit = Visit(name, town)
-
-                    visits.add(visit)
-
-                }
-
-                visitsFragment.populateList(visits)
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error getting documents: ", exception)
-            }
+    private suspend fun logThread(methodName: String){
+        log("$methodName : ${Thread.currentThread().name}")
     }
 
     fun signOut(){
@@ -211,7 +150,7 @@ class MainActivity : AppCompatActivity(){
         super.onNewIntent(intent)
         if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent.action) {
             toast("MESSAGE: ${intent.type}")
-            edittext_clients_search.setText(intent.type)
+            //client.setText(intent.type)
             val rawMessage = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
 
             if (rawMessage != null) {
@@ -245,6 +184,19 @@ class MainActivity : AppCompatActivity(){
                     }
                 }
             }
+        }
+    }
+
+    // Loading spinner.
+    suspend fun showSpinner(){
+        withContext(Dispatchers.Main) {
+            progressbar_main_spinner.visibility = View.VISIBLE
+        }
+    }
+
+    suspend fun hideSpinner(){
+        withContext(Dispatchers.Main) {
+            progressbar_main_spinner.visibility = View.INVISIBLE
         }
     }
 }

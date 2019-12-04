@@ -1,4 +1,4 @@
-package com.colinmaher.carersapp.helpers
+package com.colinmaher.carersapp.extensions
 
 import android.content.Context
 import android.util.Log

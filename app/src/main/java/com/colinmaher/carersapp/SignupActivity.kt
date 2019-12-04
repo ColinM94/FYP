@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.colinmaher.carersapp.models.Client
 import com.colinmaher.carersapp.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -124,9 +125,12 @@ class SignupActivity : AppCompatActivity() {
         val uid = FirebaseAuth.getInstance().uid ?: ""
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
 
+        val clients = mutableListOf<String>()
+
         val user = User(
             uid,
-            edittext_signup_name.text.toString()
+            edittext_signup_name.text.toString(),
+            clients
             //profileImageUrl
         )
 

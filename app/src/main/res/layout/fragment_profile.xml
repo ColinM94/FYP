@@ -22,33 +22,77 @@
                 android:id="@+id/textview_profile_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/profile_title"
+                android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-                android:id="@+id/edittext_profile_name"
+        <TextView
+                android:id="@+id/textview_profile_role"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:ems="10"
-                android:inputType="textPersonName"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="16dp"
+                android:text="@string/profile_role"
+                android:labelFor="@id/edittext_profile_role"
+                app:layout_constraintBottom_toTopOf="@+id/edittext_profile_role"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textview_profile_title" />
+                app:layout_constraintTop_toBottomOf="@+id/edittext_profile_role" />
+
 
         <EditText
                 android:id="@+id/edittext_profile_role"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
                 android:ems="10"
-                android:inputType="textPersonName"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textview_profile_role"
+                app:layout_constraintTop_toBottomOf="@+id/textview_profile_title" />
+
+        <TextView
+                android:id="@+id/textview_profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/profile_name"
+                app:layout_constraintBottom_toTopOf="@+id/edittext_profile_name"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/edittext_profile_name" />
+
+        <EditText
+                android:id="@+id/edittext_profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textview_profile_role"
+                app:layout_constraintTop_toBottomOf="@+id/edittext_profile_role" />
+
+        <Button
+                android:id="@+id/button_profile_update"
+                android:layout_width="0dp"
+                android:layout_height="65dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/profile_save"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+
+
+
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
