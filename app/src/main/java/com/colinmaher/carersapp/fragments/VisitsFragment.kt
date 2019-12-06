@@ -1,5 +1,6 @@
 package com.colinmaher.carersapp.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +22,11 @@ import kotlinx.android.synthetic.main.visit_item.view.*
 class VisitsFragment(private var currentUser: FirebaseUser, var db: FirebaseFirestore) : Fragment() {
     private lateinit var adapter: VisitAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_visits, container, false)
     }
 
@@ -31,16 +36,21 @@ class VisitsFragment(private var currentUser: FirebaseUser, var db: FirebaseFire
 
     }
 
-    private fun populateList(visits : MutableList<Visit>){
-        adapter = VisitAdapter()
+    private fun populateList(visits: MutableList<Visit>) {
+        adapter = VisitAdapter(this.context!!)
         adapter.replaceItems(visits)
         recyclerview_visit.adapter = adapter
 
         // Adds divider between items.
-        recyclerview_visit.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        recyclerview_visit.addItemDecoration(
+            DividerItemDecoration(
+                context,
+                DividerItemDecoration.VERTICAL
+            )
+        )
     }
 
-    private fun loadData(){
+    private fun loadData() {
         log("$currentUser")
         //var visits : MutableList<Visit>
 
@@ -53,7 +63,7 @@ class VisitsFragment(private var currentUser: FirebaseUser, var db: FirebaseFire
                     visits.add(document.toObject(Visit::class.java))
                 }
 
-                if(visits.isNotEmpty()){
+                if (visits.isNotEmpty()) {
                     populateList(visits)
                 }
             }
@@ -62,34 +72,41 @@ class VisitsFragment(private var currentUser: FirebaseUser, var db: FirebaseFire
             }
     }
 
-    class VisitAdapter : RecyclerView.Adapter<VisitAdapter.ViewHolder>() {
-        private var items = listOf<Visit>()
+    fun toast(msg: String) {
+        Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+    }
+}
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.visit_item, parent, false)
-            return ViewHolder(view)
-        }
+class VisitAdapter(private var context: Context) : RecyclerView.Adapter<VisitAdapter.ViewHolder>() {
+    private var items = listOf<Visit>()
 
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val item = items[position]
-
-            holder.containerView.textview_visit_name.text = item.name
-            holder.containerView.textview_visit_location.text = item.town
-
-        }
-
-        fun replaceItems(items: List<Visit>) {
-            this.items = items
-            notifyDataSetChanged()
-        }
-
-        override fun getItemCount(): Int = items.size
-
-        inner class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
-            LayoutContainer
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.visit_item, parent, false)
+        return ViewHolder(view)
     }
 
-    private fun toast(msg: String){
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = items[position]
+
+        holder.containerView.textview_visit_name.text = item.name
+        holder.containerView.textview_visit_location.text = item.town
+
+        holder.containerView.setOnClickListener {
+            toast("Clicked ${item.name}")
+        }
+    }
+
+    fun replaceItems(items: List<Visit>) {
+        this.items = items
+        notifyDataSetChanged()
+    }
+
+    override fun getItemCount(): Int = items.size
+
+    inner class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView),
+        LayoutContainer
+
+    private fun toast(msg: String) {
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
     }
 }

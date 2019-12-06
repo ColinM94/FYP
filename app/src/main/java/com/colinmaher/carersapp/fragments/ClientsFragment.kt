@@ -1,5 +1,6 @@
 package com.colinmaher.carersapp.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,7 +41,7 @@ class ClientsFragment(private var currentUser: FirebaseUser, private var db: Fir
     }
 
     private fun populateList(clients : MutableList<Client>){
-        adapter = ClientAdapter()
+        adapter = ClientAdapter(this.context!!)
         adapter.replaceItems(clients)
 
         recyclerview_client.adapter = adapter
@@ -59,12 +60,11 @@ class ClientsFragment(private var currentUser: FirebaseUser, private var db: Fir
 
             if(user != null){
                for(clientId in user.clients){
-                   var client = db.collection("clients").document(clientId).get().await()
-                   clients.add(client.toObject(Client::class.java)!!)
-               }
+                   clients.add(db.collection("clients").document(clientId).get().await().toObject(Client::class.java)!!)
+                }
 
                 withContext(Dispatchers.Main) {
-                    populateList(clients)
+                   populateList(clients)
                 }
             }
         }
@@ -79,9 +79,10 @@ class ClientsFragment(private var currentUser: FirebaseUser, private var db: Fir
     }
 }
 
-class ClientAdapter : RecyclerView.Adapter<ClientAdapter.ViewHolder>(){
+class ClientAdapter(context: Context) : RecyclerView.Adapter<ClientAdapter.ViewHolder>(){
     private var items = listOf<Client>()
     lateinit var selectedId : String
+    private var context = context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.client_item, parent, false)
@@ -91,23 +92,26 @@ class ClientAdapter : RecyclerView.Adapter<ClientAdapter.ViewHolder>(){
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
 
-        selectedId = item.id
+       // selectedId = item.id
         holder.containerView.textview_client_name.text = item.name
         holder.containerView.textview_client_mobile.text = item.mobile
 
 
         holder.containerView.setOnClickListener {
-            log("Clicked ${item.name}")
-
+            toast("Clicked ${item.name}")
         }
+
 
         //holder.containerView.setOnClickListener(onClick(this.ViewHolder()))
     }
 
-
     fun replaceItems(items: List<Client>) {
         this.items = items
         notifyDataSetChanged()
+    }
+
+    private fun toast(msg: String){
+        Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
     }
 
     override fun getItemCount(): Int = items.size
