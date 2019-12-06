@@ -4,7 +4,10 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:padding="22dp">
+        android:padding="22dp"
+        android:focusable="true"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground">
 
     <TextView
             android:id="@+id/textview_client_name"

@@ -36,12 +36,8 @@ class VisitsFragment(private var currentUser: FirebaseUser, var db: FirebaseFire
         adapter.replaceItems(visits)
         recyclerview_visit.adapter = adapter
 
-        recyclerview_visit.addItemDecoration(
-            DividerItemDecoration(
-                context,
-                LinearLayoutManager.VERTICAL
-            )
-        )
+        // Adds divider between items.
+        recyclerview_visit.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
     }
 
     private fun loadData(){
@@ -57,24 +53,20 @@ class VisitsFragment(private var currentUser: FirebaseUser, var db: FirebaseFire
                     visits.add(document.toObject(Visit::class.java))
                 }
 
-                if(visits.isEmpty()){
-                    toast("No Visits Found!")
+                if(visits.isNotEmpty()){
+                    populateList(visits)
                 }
-
-                populateList(visits)
             }
             .addOnFailureListener { exception ->
                 toast("${exception.message}")
             }
     }
 
-
     class VisitAdapter : RecyclerView.Adapter<VisitAdapter.ViewHolder>() {
         private var items = listOf<Visit>()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.visit_item, parent, false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.visit_item, parent, false)
             return ViewHolder(view)
         }
 
