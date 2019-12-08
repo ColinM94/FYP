@@ -1,19 +1,20 @@
 package com.colinmaher.carersapp.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.colinmaher.carersapp.ClientActivity
 import com.colinmaher.carersapp.MainActivity
 import com.colinmaher.carersapp.R
 import com.colinmaher.carersapp.extensions.log
-import com.colinmaher.carersapp.models.Client
+import com.colinmaher.carersapp.models.ClientItem
 import com.colinmaher.carersapp.models.User
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -26,63 +27,59 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-
 class ClientsFragment(private var currentUser: FirebaseUser, private var db: FirebaseFirestore) : Fragment() {
     private lateinit var adapter: ClientAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var view = inflater.inflate(R.layout.fragment_clients, container, false)
-
-        return view
+        return inflater.inflate(R.layout.fragment_clients, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         loadData()
     }
 
-    private fun populateList(clients : MutableList<Client>){
+    private fun populateList(clients : MutableList<ClientItem>){
         adapter = ClientAdapter(this.context!!)
         adapter.replaceItems(clients)
 
         recyclerview_client.adapter = adapter
-        // Adds divider between items.
+
+        // Adds divider line between items.
         recyclerview_client.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        log("Instance saved")
     }
 
     private fun loadData(){
         CoroutineScope(Dispatchers.IO).launch {
-            log("$currentUser")
+            (activity as MainActivity).showSpinner()
 
-            val clients = mutableListOf<Client>()
+            val clients = mutableListOf<ClientItem>()
 
-            var user = (activity as MainActivity).getDocument("users", currentUser.uid).toObject(User::class.java)
-            log("$user")
+            val user = (activity as MainActivity).getDocument("users", currentUser.uid).toObject(User::class.java)
 
             if(user != null){
-               for(clientId in user.clients){
-                   clients.add(db.collection("clients").document(clientId).get().await().toObject(Client::class.java)!!)
+                for(clientId in user.clients){
+                    val client = db.collection("clients").document(clientId).get().await().toObject(ClientItem::class.java)!!
+                    client.id = clientId
+                    clients.add(client)
                 }
 
                 withContext(Dispatchers.Main) {
-                   populateList(clients)
+                    populateList(clients)
                 }
             }
+            (activity as MainActivity).hideSpinner()
         }
-    }
-
-    fun openProfile(){
-        log("profile opened")
-    }
-
-    private fun toast(msg: String){
-        Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
     }
 }
 
-class ClientAdapter(context: Context) : RecyclerView.Adapter<ClientAdapter.ViewHolder>(){
-    private var items = listOf<Client>()
-    lateinit var selectedId : String
-    private var context = context
+class ClientAdapter(val context: Context) : RecyclerView.Adapter<ClientAdapter.ViewHolder>(){
+    private var items = listOf<ClientItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.client_item, parent, false)
@@ -96,26 +93,19 @@ class ClientAdapter(context: Context) : RecyclerView.Adapter<ClientAdapter.ViewH
         holder.containerView.textview_client_name.text = item.name
         holder.containerView.textview_client_mobile.text = item.mobile
 
-
         holder.containerView.setOnClickListener {
-            toast("Clicked ${item.name}")
+            val intent = Intent(context, ClientActivity::class.java)
+            intent.putExtra("id", item.id)
+            context.startActivity(intent)
         }
-
-
-        //holder.containerView.setOnClickListener(onClick(this.ViewHolder()))
     }
 
-    fun replaceItems(items: List<Client>) {
+    fun replaceItems(items: List<ClientItem>) {
         this.items = items
         notifyDataSetChanged()
-    }
-
-    private fun toast(msg: String){
-        Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
     }
 
     override fun getItemCount(): Int = items.size
 
     inner class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
-
 }

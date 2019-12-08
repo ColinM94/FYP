@@ -60,11 +60,6 @@ class MainActivity : AppCompatActivity(){
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .commit()
 
-        log(currentUser.uid)
-
-        //getResult()
-        //getUser()
-
     }
 
     override fun onResume() {

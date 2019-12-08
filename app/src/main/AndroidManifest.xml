@@ -4,7 +4,10 @@
         package="com.colinmaher.carersapp">
 
     <uses-permission android:name="android.permission.NFC" />
-    <uses-feature android:name="android.hardware.nfc" android:required="true" />
+
+    <uses-feature
+            android:name="android.hardware.nfc"
+            android:required="true" />
 
     <application
             android:allowBackup="true"
@@ -15,19 +18,37 @@
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
         <activity
-                android:name=".MainActivity"
-                android:label="@string/title_activity_main">
+                android:name=".VisitActivity"
+                android:label="@string/title_activity_visit"
+                android:parentActivityName=".MainActivity"
+                android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.colinmaher.carersapp.MainActivity" />
         </activity>
-        <activity android:name=".SignupActivity"/>
+        <activity
+                android:name=".ClientActivity"
+                android:label="@string/title_activity_client"
+                android:parentActivityName=".MainActivity"
+                android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.colinmaher.carersapp.MainActivity" />
+        </activity>
+        <activity
+                android:name=".MainActivity"
+                android:label="@string/title_activity_main" />
+        <activity android:name=".SignupActivity" />
         <activity android:name=".SigninActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
                 android:name=".SenderActivity"
-                android:label="NFC">
-        </activity>
+                android:label="NFC" />
     </application>
+
 </manifest>

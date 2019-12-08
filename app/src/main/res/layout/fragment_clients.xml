@@ -16,12 +16,5 @@
             tools:context=".fragments.ClientsFragment"
             tools:listitem="@layout/client_item"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="16dp"
-            android:src="@drawable/common_google_signin_btn_icon_dark" />
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -11,15 +11,14 @@
 
     <TextView
             android:id="@+id/textview_client_name"
-            android:layout_width="200dp"
-            android:layout_height="match_parent"
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceListItem" />
 
     <TextView
             android:id="@+id/textview_client_mobile"
-            android:layout_width="200dp"
-            android:layout_height="match_parent"
-            android:textAppearance="?attr/textAppearanceListItem"
-            />
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceListItem" />
 
 </LinearLayout>
