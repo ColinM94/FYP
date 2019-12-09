@@ -14,7 +14,7 @@ import com.colinmaher.carersapp.ClientActivity
 import com.colinmaher.carersapp.MainActivity
 import com.colinmaher.carersapp.R
 import com.colinmaher.carersapp.extensions.log
-import com.colinmaher.carersapp.models.ClientItem
+import com.colinmaher.carersapp.models.Client
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.extensions.LayoutContainer
@@ -37,7 +37,7 @@ class ClientsFragment(private var currentUser: FirebaseUser, private var db: Fir
         loadData()
     }
 
-    private fun populateList(clients : MutableList<ClientItem>){
+    private fun populateList(clients : MutableList<Client>){
         adapter = ClientAdapter(this.context!!)
         adapter.replaceItems(clients)
 
@@ -62,7 +62,7 @@ class ClientsFragment(private var currentUser: FirebaseUser, private var db: Fir
 
             val docRef = db.collection("connections").document(currentUser.uid)
             var clientIds = ArrayList<String>()
-            val clients = mutableListOf<ClientItem>()
+            val clients = mutableListOf<Client>()
 
             docRef.get()
                 .addOnSuccessListener { document ->
@@ -75,7 +75,7 @@ class ClientsFragment(private var currentUser: FirebaseUser, private var db: Fir
 
             clientIds.forEach{ id ->
                 log("Foreach")
-                val client = db.collection("clients").document(id).get().await().toObject(ClientItem::class.java)!!
+                val client = db.collection("clients").document(id).get().await().toObject(Client::class.java)!!
                 client.id = id
                 clients.add(client)
             }
@@ -88,7 +88,7 @@ class ClientsFragment(private var currentUser: FirebaseUser, private var db: Fir
 }
 
 class ClientAdapter(val context: Context) : RecyclerView.Adapter<ClientAdapter.ViewHolder>(){
-    private var items = listOf<ClientItem>()
+    private var items = listOf<Client>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.client_item, parent, false)
@@ -109,7 +109,7 @@ class ClientAdapter(val context: Context) : RecyclerView.Adapter<ClientAdapter.V
         }
     }
 
-    fun replaceItems(items: List<ClientItem>) {
+    fun replaceItems(items: List<Client>) {
         this.items = items
         notifyDataSetChanged()
     }

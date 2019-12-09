@@ -65,6 +65,7 @@ class ProfileFragment(var currentUser: FirebaseUser, var db: FirebaseFirestore) 
                     edittext_profile_address2.setText(user.address2)
                     edittext_profile_town.setText(user.town)
                     spinner_profile_counties.setSelection(getIndex(spinner_profile_counties, user.county))
+                    edittext_profile_eircode.setText(user.eircode)
                 }
             }
         }

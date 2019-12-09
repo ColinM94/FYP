@@ -7,8 +7,9 @@ data class User(
     var role: String = "",
     var address1: String = "",
     var address2: String = "",
+    var town: String = "",
     var county: String = "",
-    var town: String = ""
+    var eircode: String = ""
 ) : Serializable
 
 

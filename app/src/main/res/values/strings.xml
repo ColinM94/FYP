@@ -66,6 +66,7 @@
         <item>Wexford</item>
         <item>Wicklow</item>
     </string-array>
+    <string name="profile_eircode">Eircode</string>
 
     <!-- Clients -->
     <string name="clients_title">Clients</string>

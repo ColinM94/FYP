@@ -14,7 +14,7 @@ import com.colinmaher.carersapp.MainActivity
 import com.colinmaher.carersapp.R
 import com.colinmaher.carersapp.VisitActivity
 import com.colinmaher.carersapp.extensions.log
-import com.colinmaher.carersapp.models.VisitItem
+import com.colinmaher.carersapp.models.Visit
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.extensions.LayoutContainer
@@ -39,9 +39,9 @@ class VisitsFragment(private var currentUser: FirebaseUser, private var db: Fire
         loadData()
     }
 
-    private fun populateList(visitItems: MutableList<VisitItem>) {
+    private fun populateList(visits: MutableList<Visit>) {
         adapter = VisitAdapter(this.context!!)
-        adapter.replaceItems(visitItems)
+        adapter.replaceItems(visits)
         recyclerview_visit.adapter = adapter
 
         // Adds divider between items.
@@ -58,15 +58,14 @@ class VisitsFragment(private var currentUser: FirebaseUser, private var db: Fire
             withContext(Dispatchers.Main){(activity as MainActivity).hideSpinner()}
 
             log("$currentUser")
-            //var visits : MutableList<Visit>
 
-            val visits = mutableListOf<VisitItem>()
+            val visits = mutableListOf<Visit>()
 
             db.collection("visits/${currentUser.uid}/visits")
                 .get()
                 .addOnSuccessListener { result ->
                     for (document in result) {
-                        val visit = document.toObject(VisitItem::class.java)
+                        val visit = document.toObject(Visit::class.java)
                         visit.id = document.id
                         visits.add(visit)
                     }
@@ -84,7 +83,7 @@ class VisitsFragment(private var currentUser: FirebaseUser, private var db: Fire
     }
 
     inner class VisitAdapter(private var context: Context) : RecyclerView.Adapter<VisitAdapter.ViewHolder>() {
-        private var items = listOf<VisitItem>()
+        private var items = listOf<Visit>()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.visit_item, parent, false)
@@ -106,7 +105,7 @@ class VisitsFragment(private var currentUser: FirebaseUser, private var db: Fire
             }
         }
 
-        fun replaceItems(items: List<VisitItem>) {
+        fun replaceItems(items: List<Visit>) {
             this.items = items
             notifyDataSetChanged()
         }
