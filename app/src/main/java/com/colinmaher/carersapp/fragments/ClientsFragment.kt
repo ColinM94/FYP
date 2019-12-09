@@ -99,7 +99,7 @@ class ClientAdapter(val context: Context) : RecyclerView.Adapter<ClientAdapter.V
         val item = items[position]
 
        // selectedId = item.id
-        holder.containerView.textview_client_name.text = item.name
+        holder.containerView.textview_client_name_label.text = item.name
         holder.containerView.textview_client_mobile.text = item.mobile
 
         holder.containerView.setOnClickListener {

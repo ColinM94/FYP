@@ -1,7 +1,6 @@
 <resources>
+    <!-- App -->
     <string name="app_name">Carers App</string>
-
-    <string name="title_activity_main">MainActivity</string>
 
     <!-- Signup -->
     <string name="signup_name">Name</string>
@@ -28,7 +27,6 @@
 
     <!-- Visit -->
     <string name="visit_title">Visit Details</string>
-
 
     <!-- Profile -->
     <string name="profile_title">Profile</string>
@@ -74,6 +72,10 @@
 
     <!-- Client -->
     <string name="client_title">Client Details</string>
+    <string name="client_name">Name</string>
+    <string name="client_address">Address</string>
+    <string name="client_mobile">Mobile</string>
+    <string name="client_marital">Marital Status</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>

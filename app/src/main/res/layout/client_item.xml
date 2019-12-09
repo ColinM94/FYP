@@ -10,7 +10,7 @@
         android:foreground="?android:attr/selectableItemBackground">
 
     <TextView
-            android:id="@+id/textview_client_name"
+            android:id="@+id/textview_client_name_label"
             android:layout_width="190dp"
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceListItem" />

@@ -35,9 +35,7 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="com.colinmaher.carersapp.MainActivity" />
         </activity>
-        <activity
-                android:name=".MainActivity"
-                android:label="@string/title_activity_main" />
+        <activity android:name=".MainActivity" />
         <activity android:name=".SignupActivity" />
         <activity android:name=".SigninActivity">
             <intent-filter>
