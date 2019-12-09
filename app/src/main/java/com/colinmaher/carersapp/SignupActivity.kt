@@ -128,8 +128,7 @@ class SignupActivity : AppCompatActivity() {
 
         val user = User(
             uid,
-            edittext_signup_name.text.toString(),
-            clients
+            edittext_signup_name.text.toString()
             //profileImageUrl
         )
 

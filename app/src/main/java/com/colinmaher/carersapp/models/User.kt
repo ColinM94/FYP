@@ -1,12 +1,14 @@
 package com.colinmaher.carersapp.models
 
-import com.google.firebase.firestore.PropertyName
 import java.io.Serializable
 
 data class User(
     var name: String = "",
     var role: String = "",
-    var clients: MutableList<String> = ArrayList()
+    var address1: String = "",
+    var address2: String = "",
+    var county: String = "",
+    var town: String = ""
 ) : Serializable
 
 

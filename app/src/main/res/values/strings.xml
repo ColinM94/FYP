@@ -27,6 +27,7 @@
     <string name="visits_title">Visits</string>
 
     <!-- Visit -->
+    <string name="visit_title">Visit Details</string>
 
 
     <!-- Profile -->
@@ -35,9 +36,44 @@
     <string name="profile_name">Name</string>
     <string name="profile_save">Save</string>
     <string name="profile_role">Role</string>
+    <string name="profile_address1">Address 1</string>
+    <string name="profile_address2">Address 2</string>
+    <string name="profile_town">Town</string>
+    <string name="profile_county">County</string>
+    <string-array name="profile_counties">
+        <item>Carlow</item>
+        <item>Cavan</item>
+        <item>Clare</item>
+        <item>Cork</item>
+        <item>Donegal</item>
+        <item>Dublin</item>
+        <item>Galway</item>
+        <item>Kerry</item>
+        <item>Kildare</item>
+        <item>Kilkenny</item>
+        <item>Laois</item>
+        <item>Leitrim</item>
+        <item>Limerick</item>
+        <item>Longford</item>
+        <item>Louth</item>
+        <item>Mayo</item>
+        <item>Meath</item>
+        <item>Monaghan</item>
+        <item>Offaly</item>
+        <item>Roscommon</item>
+        <item>Sligo</item>
+        <item>Tipperary</item>
+        <item>Waterford</item>
+        <item>Westmeath</item>
+        <item>Wexford</item>
+        <item>Wicklow</item>
+    </string-array>
 
     <!-- Clients -->
     <string name="clients_title">Clients</string>
+
+    <!-- Client -->
+    <string name="client_title">Client Details</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>

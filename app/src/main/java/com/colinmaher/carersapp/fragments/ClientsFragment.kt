@@ -15,7 +15,6 @@ import com.colinmaher.carersapp.MainActivity
 import com.colinmaher.carersapp.R
 import com.colinmaher.carersapp.extensions.log
 import com.colinmaher.carersapp.models.ClientItem
-import com.colinmaher.carersapp.models.User
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.extensions.LayoutContainer
@@ -46,6 +45,8 @@ class ClientsFragment(private var currentUser: FirebaseUser, private var db: Fir
 
         // Adds divider line between items.
         recyclerview_client.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+
+       (activity as MainActivity).hideSpinner()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -56,24 +57,32 @@ class ClientsFragment(private var currentUser: FirebaseUser, private var db: Fir
 
     private fun loadData(){
         CoroutineScope(Dispatchers.IO).launch {
-            (activity as MainActivity).showSpinner()
 
+            withContext(Dispatchers.Main){(activity as MainActivity).hideSpinner()}
+
+            val docRef = db.collection("connections").document(currentUser.uid)
+            var clientIds = ArrayList<String>()
             val clients = mutableListOf<ClientItem>()
 
-            val user = (activity as MainActivity).getDocument("users", currentUser.uid).toObject(User::class.java)
-
-            if(user != null){
-                for(clientId in user.clients){
-                    val client = db.collection("clients").document(clientId).get().await().toObject(ClientItem::class.java)!!
-                    client.id = clientId
-                    clients.add(client)
+            docRef.get()
+                .addOnSuccessListener { document ->
+                    clientIds = document.get("clients") as ArrayList<String>
+                    log("firebase complete")
                 }
+                .addOnFailureListener { exception ->
+                    Toast.makeText(context, exception.message, Toast.LENGTH_LONG).show()
+                }.await()
 
-                withContext(Dispatchers.Main) {
-                    populateList(clients)
-                }
+            clientIds.forEach{ id ->
+                log("Foreach")
+                val client = db.collection("clients").document(id).get().await().toObject(ClientItem::class.java)!!
+                client.id = id
+                clients.add(client)
             }
-            (activity as MainActivity).hideSpinner()
+
+            withContext(Dispatchers.Main) {
+                populateList(clients)
+            }
         }
     }
 }

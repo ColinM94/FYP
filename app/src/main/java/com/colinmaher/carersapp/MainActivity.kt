@@ -6,7 +6,6 @@ import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import com.colinmaher.carersapp.extensions.log
@@ -21,9 +20,6 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_signin.*
-import kotlinx.android.synthetic.main.fragment_clients.*
-import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -56,7 +52,6 @@ class MainActivity : AppCompatActivity(){
         // Initial fragment to load.
         manager.beginTransaction()
             .replace(R.id.container, visitsFragment)
-            //.addToBackStack(clientsFragment.toString())
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .commit()
 
@@ -76,35 +71,15 @@ class MainActivity : AppCompatActivity(){
         nfcAdapter.disableForegroundDispatch(this)
     }
 
-    suspend fun getDocument(collectionName: String, docId: String) : DocumentSnapshot{
-        return db.collection(collectionName).document(docId).get().await()
-    }
-
-    suspend fun getAllDocuments(collectionName: String) : QuerySnapshot {
-        return db.collection(collectionName).get().await()
-    }
-
-
-
     private suspend fun logThread(methodName: String){
         log("$methodName : ${Thread.currentThread().name}")
     }
-
-    fun signOut(){
-        val intent = Intent(this, SigninActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK) // Clears back button stack.
-        startActivity(intent)
-
-        FirebaseAuth.getInstance().signOut()
-    }
-
 
     // Listens for navigation bar button presses.
     private val navigationSelectionListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
 
         when ("$item") {
             "Visits" -> {
-                log("Visits choses")
                 manager.beginTransaction()
                     .replace(R.id.container, visitsFragment)
                     //.addToBackStack(clientsFragment.toString())
@@ -112,7 +87,6 @@ class MainActivity : AppCompatActivity(){
                     .commit()
             }
             "Clients" -> {
-                log("Clients selected")
                 manager.beginTransaction()
                     .replace(R.id.container, clientsFragment)
                     //.addToBackStack(clientsFragment.toString())
@@ -183,16 +157,12 @@ class MainActivity : AppCompatActivity(){
     }
 
     // Loading spinner.
-    suspend fun showSpinner(){
-        withContext(Dispatchers.Main) {
-            progressbar_main_spinner.visibility = View.VISIBLE
-        }
+    fun showSpinner(){
+        progressbar_main_spinner.visibility = View.VISIBLE
     }
 
-    suspend fun hideSpinner(){
-        withContext(Dispatchers.Main) {
-            progressbar_main_spinner.visibility = View.INVISIBLE
-        }
+    fun hideSpinner(){
+        progressbar_main_spinner.visibility = View.INVISIBLE
     }
 }
 
