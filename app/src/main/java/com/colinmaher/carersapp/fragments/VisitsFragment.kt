@@ -15,6 +15,7 @@ import com.colinmaher.carersapp.R
 import com.colinmaher.carersapp.VisitActivity
 import com.colinmaher.carersapp.extensions.log
 import com.colinmaher.carersapp.models.Visit
+import com.colinmaher.carersapp.models.Visits
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.extensions.LayoutContainer
@@ -55,30 +56,27 @@ class VisitsFragment(private var currentUser: FirebaseUser, private var db: Fire
 
     private fun loadData() {
         CoroutineScope(Dispatchers.IO).launch {
-            withContext(Dispatchers.Main){(activity as MainActivity).hideSpinner()}
-
-            log("$currentUser")
+            withContext(Dispatchers.Main){(activity as MainActivity).showSpinner()}
 
             val visits = mutableListOf<Visit>()
 
-            db.collection("visits/${currentUser.uid}/visits")
-                .get()
-                .addOnSuccessListener { result ->
-                    for (document in result) {
-                        val visit = document.toObject(Visit::class.java)
-                        visit.id = document.id
-                        visits.add(visit)
-                    }
+            // Get current users list of visit Ids.
+            val idList = db.collection("visits").document(currentUser.uid).get().await().toObject(Visits::class.java)
 
-                    if (visits.isNotEmpty()) {
-                        populateList(visits)
-                    }
+            // Get the details of these visits.
+            idList?.visitIds?.forEach{ id ->
+                val visit = db.collection("visitDetails").document(id).get().await().toObject(Visit::class.java)
+                visit!!.id = id
+                visits.add(visit)
+            }
+
+            withContext(Dispatchers.Main){
+                if (visits.isNotEmpty()) {
+                    populateList(visits)
                 }
-                .addOnFailureListener { exception ->
-                    log("${exception.message}")
-                }.await()
 
-            withContext(Dispatchers.Main){(activity as MainActivity).hideSpinner()}
+                (activity as MainActivity).hideSpinner()
+            }
         }
     }
 
@@ -93,8 +91,7 @@ class VisitsFragment(private var currentUser: FirebaseUser, private var db: Fire
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = items[position]
 
-            holder.containerView.textview_visit_name.text = item.name
-            holder.containerView.textview_visit_location.text = item.town
+            holder.containerView.textview_visit_name.text = item.startTime?.toDate().toString()
 
             holder.containerView.setOnClickListener {
                 val intent = Intent(context, VisitActivity::class.java)

@@ -10,18 +10,65 @@
             android:id="@+id/textview_visit_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:text="@string/visit_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-            android:id="@+id/textview_visit_name"
+            android:id="@+id/textview_visit_starttime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="@+id/textview_visit_title"
+            app:layout_constraintStart_toStartOf="@+id/textview_visit_title"
             app:layout_constraintTop_toBottomOf="@+id/textview_visit_title" />
+
+    <TextView
+            android:id="@+id/textview_visit_clockintime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/button_visit_clockin"
+            app:layout_constraintStart_toStartOf="@+id/button_visit_clockin"
+            app:layout_constraintTop_toBottomOf="@+id/button_visit_clockin" />
+
+    <TextView
+            android:id="@+id/textview_visit_clockouttime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/button_visit_clockout"
+            app:layout_constraintStart_toStartOf="@+id/button_visit_clockout"
+            app:layout_constraintTop_toBottomOf="@+id/button_visit_clockout" />
+
+    <TextView
+            android:id="@+id/textview_visit_endtime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="@+id/textview_visit_clockintime"
+            app:layout_constraintStart_toStartOf="@+id/textview_visit_clockintime"
+            app:layout_constraintTop_toBottomOf="@+id/textview_visit_clockintime" />
+
+    <Button
+            android:id="@+id/button_visit_clockin"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/visit_clockin"
+            app:layout_constraintEnd_toEndOf="@+id/textview_visit_starttime"
+            app:layout_constraintStart_toStartOf="@+id/textview_visit_starttime"
+            app:layout_constraintTop_toBottomOf="@+id/textview_visit_starttime" />
+
+    <Button
+            android:id="@+id/button_visit_clockout"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/visit_clockout"
+            app:layout_constraintEnd_toEndOf="@+id/textview_visit_endtime"
+            app:layout_constraintStart_toStartOf="@+id/textview_visit_endtime"
+            app:layout_constraintTop_toBottomOf="@+id/textview_visit_endtime" />
 </androidx.constraintlayout.widget.ConstraintLayout>

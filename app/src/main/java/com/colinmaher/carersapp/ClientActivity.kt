@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
 
 class ClientActivity : AppCompatActivity() {
     private val db = FirebaseFirestore.getInstance()
-    private val currentUser = FirebaseAuth.getInstance().currentUser!!
+    //private val currentUser = FirebaseAuth.getInstance().currentUser!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,15 +27,10 @@ class ClientActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             // Get client details.
-            val client = db.collection("clients").document("$clientId/data/details").get().await().toObject(Client::class.java)
+            val client = db.collection("clientDetails").document(clientId).get().await().toObject(Client::class.java)
 
-            // Get client name and mobile.
-            val temp = db.collection("clients").document(clientId).get().await().toObject(Client::class.java)
-
-            if(client != null && temp != null){
-                client.name = temp.name
-                client.mobile = temp.mobile
-
+            log(client.toString())
+            if(client != null){
                 withContext(Dispatchers.Main) {
                     textview_client_name.text = client.name
                     textview_client_address.text = "${client.address1}, ${client.address2}, ${client.town}, ${client.county}, ${client.eircode}"

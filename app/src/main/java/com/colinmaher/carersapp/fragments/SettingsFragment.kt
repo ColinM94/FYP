@@ -20,16 +20,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.preferences, rootKey)
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
-
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {
         if (preference != null) {
             when (preference.key) {
                 "signout" -> {
                     signOut()
-
                 }
             }
         }

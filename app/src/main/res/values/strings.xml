@@ -27,6 +27,8 @@
 
     <!-- Visit -->
     <string name="visit_title">Visit Details</string>
+    <string name="visit_clockin">Clock In</string>
+    <string name="visit_clockout">Clock Out</string>
 
     <!-- Profile -->
     <string name="profile_title">Profile</string>
@@ -77,6 +79,8 @@
     <string name="client_address">Address</string>
     <string name="client_mobile">Mobile</string>
     <string name="client_marital">Marital Status</string>
+    <string name="client_visits">Upcoming Visits</string>
+    <string name="client_staff">Staff</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
