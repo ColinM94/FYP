@@ -91,7 +91,9 @@ class VisitsFragment(private var currentUser: FirebaseUser, private var db: Fire
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = items[position]
 
-            holder.containerView.textview_visit_name.text = item.startTime?.toDate().toString()
+            holder.containerView.textview_visit_name.text = "Jimmy Ryan"
+            holder.containerView.textview_visit_location.text = item.startTime?.toDate().toString()
+
 
             holder.containerView.setOnClickListener {
                 val intent = Intent(context, VisitActivity::class.java)

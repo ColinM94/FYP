@@ -47,17 +47,10 @@ class ProfileFragment(var currentUser: FirebaseUser, var db: FirebaseFirestore) 
         // IO(Network interactions), Main(UI), Default(Heavy computation).
         CoroutineScope(Dispatchers.IO).launch {
             // Get users details.
-            val user = db.collection("users").document("${currentUser.uid}/data/details").get().await().toObject(User::class.java)
+            val user = db.collection("userDetails").document(currentUser.uid).get().await().toObject(User::class.java)
             log("User: $user")
 
-            // Get users name and role.
-            val temp = db.collection("users").document(currentUser.uid).get().await().toObject(User::class.java)
-            log("Temp: $temp")
-
-            if(user != null && temp != null){
-                user.name = temp.name
-                user.role = temp.role
-
+            if(user != null){
                 withContext(Dispatchers.Main) {
                     edittext_profile_role.setText(user.role)
                     edittext_profile_name.setText(user.name)
@@ -79,16 +72,18 @@ class ProfileFragment(var currentUser: FirebaseUser, var db: FirebaseFirestore) 
         )
 
         val details = hashMapOf(
+            "name" to edittext_profile_name.text.toString(),
             "address1" to edittext_profile_address1.text.toString(),
             "address2" to edittext_profile_address2.text.toString(),
             "town" to edittext_profile_town.text.toString(),
-            "county" to spinner_profile_counties.selectedItem
+            "county" to spinner_profile_counties.selectedItem,
+            "eircode" to edittext_profile_eircode.text.toString()
         )
 
         CoroutineScope(Dispatchers.IO).launch {
             try{
                 db.collection("users").document(currentUser.uid).set(user, SetOptions.merge()).await()
-                db.collection("users").document("${currentUser.uid}/data/details").set(details, SetOptions.merge()).await()
+                db.collection("userDetails").document(currentUser.uid).set(details, SetOptions.merge()).await()
 
                 loadData()
                 withContext(Dispatchers.Main) { toast("Updated Successfully") }

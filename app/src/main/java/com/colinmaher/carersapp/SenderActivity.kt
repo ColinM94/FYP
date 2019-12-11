@@ -62,7 +62,7 @@ class SenderActivity : AppCompatActivity() {
                         log("- URI " +  curRecord.toUri().toString())
                     } else {
                         // Other NDEF Tags - simply print the payload
-                        log("- Contents " +  curRecord.payload.contentToString())
+                        log("- Contents " +  curRecord.payload!!.contentToString())
                     }
                 }
             }
