@@ -124,12 +124,16 @@ class SignupActivity : AppCompatActivity() {
         val uid = FirebaseAuth.getInstance().uid ?: ""
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
 
-        val clients = mutableListOf<String>()
-
         val user = User(
-            uid,
-            edittext_signup_name.text.toString()
-            //profileImageUrl
+            id = uid,
+            name = edittext_signup_name.text.toString(),
+            role="basic",
+            address1 = "",
+            address2 = "",
+            town = "",
+            county = "",
+            eircode = "",
+            active = true
         )
 
         ref.setValue(user)

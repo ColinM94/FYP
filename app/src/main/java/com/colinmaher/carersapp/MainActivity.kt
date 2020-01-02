@@ -54,7 +54,6 @@ class MainActivity : AppCompatActivity(){
             .replace(R.id.container, visitsFragment)
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .commit()
-
     }
 
     override fun onResume() {

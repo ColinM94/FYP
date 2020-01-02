@@ -47,8 +47,7 @@ class ProfileFragment(var currentUser: FirebaseUser, var db: FirebaseFirestore) 
         // IO(Network interactions), Main(UI), Default(Heavy computation).
         CoroutineScope(Dispatchers.IO).launch {
             // Get users details.
-            val user = db.collection("userDetails").document(currentUser.uid).get().await().toObject(User::class.java)
-            log("User: $user")
+            val user = db.collection("users").document(currentUser.uid).get().await().toObject(User::class.java)
 
             if(user != null){
                 withContext(Dispatchers.Main) {
@@ -68,10 +67,6 @@ class ProfileFragment(var currentUser: FirebaseUser, var db: FirebaseFirestore) 
         (activity as MainActivity).showSpinner()
 
         val user = hashMapOf(
-            "name" to edittext_profile_name.text.toString()
-        )
-
-        val details = hashMapOf(
             "name" to edittext_profile_name.text.toString(),
             "address1" to edittext_profile_address1.text.toString(),
             "address2" to edittext_profile_address2.text.toString(),
@@ -83,7 +78,6 @@ class ProfileFragment(var currentUser: FirebaseUser, var db: FirebaseFirestore) 
         CoroutineScope(Dispatchers.IO).launch {
             try{
                 db.collection("users").document(currentUser.uid).set(user, SetOptions.merge()).await()
-                db.collection("userDetails").document(currentUser.uid).set(details, SetOptions.merge()).await()
 
                 loadData()
                 withContext(Dispatchers.Main) { toast("Updated Successfully") }

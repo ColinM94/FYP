@@ -11,6 +11,7 @@ import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
 import com.colinmaher.carersapp.extensions.log
 import com.colinmaher.carersapp.extensions.toast
+import com.colinmaher.carersapp.models.Client
 import com.colinmaher.carersapp.models.Visit
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_visit.*
@@ -19,14 +20,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.format.DateTimeFormatter
+
 
 class VisitActivity : AppCompatActivity() {
 
     private val db = FirebaseFirestore.getInstance()
-    var nfcId = ""
-    var clientId = "C82BmriRdLofgqMbBEMO"
+    private var nfcId = ""
+    var clientId = ""
+    var visitId = ""
+    //private val clientId = intent.getStringExtra"id")
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +40,8 @@ class VisitActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Visit Details"
+
+        visitId = intent.getStringExtra("visitId")
 
         val id = intent.getStringExtra("id")
 
@@ -59,13 +67,24 @@ class VisitActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             // Get client details.
-            val visit =
-                db.collection("visitDetails").document(id).get().await().toObject(Visit::class.java)
+            val visit = db.collection("visitDetails").document(visitId).get().await().toObject(Visit::class.java)
+            val client = db.collection("clients").document(visit!!.clientId).get().await().toObject(Client::class.java)
 
-            if (visit != null) {
+
+            val datePattern = "dd/mm/yyyy"
+            val timePattern = "HH:SS"
+            val dateFormat = SimpleDateFormat(datePattern)
+            val timeFormat = SimpleDateFormat(timePattern)
+
+            if (visit != null && client != null) {
                 withContext(Dispatchers.Main) {
-                    textview_visit_starttime.text = visit.startTime!!.toDate().toString()
-                    textview_visit_endtime.text = visit.endTime!!.toDate().toString()
+                    clientId = visit.clientId
+                    textview_visit_date.text = dateFormat.format(visit.startTime!!.toDate())
+                    textview_visit_starttime.text = timeFormat.format(visit.startTime!!.toDate())
+                    textview_visit_endtime.text = timeFormat.format(visit.endTime!!.toDate())
+                    textview_visititem_name.text = client.name
+                    textview_visit_address.text = "${client.address1}, ${client.address2}, ${client.town}, ${client.county}, ${client.eircode}"
+                    //textview_visit_endtime.text = visit.endTime!!.toDate().toString()
                 }
             }
         }
@@ -124,8 +143,6 @@ class VisitActivity : AppCompatActivity() {
     private fun clockOut(){
         textview_visit_clockouttime.text = DateTimeFormatter.ISO_INSTANT.format(Instant.now()).toString()
     }
-
-
 
     private fun processNdefMessages(ndefMessages: Array<NdefMessage?>) {
         // Go through all NDEF messages found on the NFC tag

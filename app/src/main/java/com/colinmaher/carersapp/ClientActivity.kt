@@ -27,7 +27,7 @@ class ClientActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             // Get client details.
-            val client = db.collection("clientDetails").document(clientId).get().await().toObject(Client::class.java)
+            val client = db.collection("clients").document(clientId).get().await().toObject(Client::class.java)
 
             log(client.toString())
             if(client != null){

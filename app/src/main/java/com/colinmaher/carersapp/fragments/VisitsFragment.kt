@@ -26,11 +26,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
 
 class VisitsFragment(private var currentUser: FirebaseUser, private var db: FirebaseFirestore) : Fragment() {
 
     private lateinit var adapter: VisitAdapter
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_visits, container, false)
@@ -91,14 +91,17 @@ class VisitsFragment(private var currentUser: FirebaseUser, private var db: Fire
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = items[position]
 
-            holder.containerView.textview_visit_name.text = "Jimmy Ryan"
-            holder.containerView.textview_visit_location.text = item.startTime?.toDate().toString()
+            val pattern = "MM/dd/yyyy | HH:SS"
+            val simpleDateFormat = SimpleDateFormat(pattern)
+
+            holder.containerView.textview_visititem_name.text = "Jimmy Ryan"
+            holder.containerView.textview_visititem_location.text = simpleDateFormat.format(item.startTime?.toDate())
 
 
             holder.containerView.setOnClickListener {
                 val intent = Intent(context, VisitActivity::class.java)
+                intent.putExtra("visitId", item.id)
                 log("ID: ${item.id}")
-                intent.putExtra("id", item.id)
 
                 context.startActivity(intent)
             }
