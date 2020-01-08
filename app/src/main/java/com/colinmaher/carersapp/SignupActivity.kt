@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.colinmaher.carersapp.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.android.synthetic.main.activity_signup.*
 
 class SignupActivity : AppCompatActivity() {
@@ -85,7 +87,7 @@ class SignupActivity : AppCompatActivity() {
 
                     //uploadImage()
 
-                    saveUserToDatabase(it.toString())
+                    saveUserToDatabase()
 
                     val intent = Intent(this, SigninActivity::class.java)
                     startActivity(intent)
@@ -119,24 +121,24 @@ class SignupActivity : AppCompatActivity() {
     }
     */
 
-    private fun saveUserToDatabase(profileImageUrl: String) {
+    private fun saveUserToDatabase() {
+        val db = FirebaseFirestore.getInstance()
+
         // ?: = Elvis operator, if null defaults to blank string.
         val uid = FirebaseAuth.getInstance().uid ?: ""
-        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
 
-        val user = User(
-            id = uid,
-            name = edittext_signup_name.text.toString(),
-            role="basic",
-            address1 = "",
-            address2 = "",
-            town = "",
-            county = "",
-            eircode = "",
-            active = true
+        val data = hashMapOf(
+            "name" to edittext_signup_name.text.toString(),
+            "role" to "Carer",
+            "address1" to "",
+            "address2" to "",
+            "town" to "",
+            "county" to "",
+            "eircode" to "",
+            "active" to true
         )
 
-        ref.setValue(user)
+        db.collection("users").document(uid).set(data, SetOptions.merge())
             .addOnSuccessListener {
                 Log.d("Debug", "Successfully saved user to database")
             }

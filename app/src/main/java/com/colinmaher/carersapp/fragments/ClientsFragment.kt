@@ -20,11 +20,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.client_item.view.*
 import kotlinx.android.synthetic.main.fragment_clients.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
+import java.lang.Exception
+import kotlin.math.log
 
 class ClientsFragment(private var currentUser: FirebaseUser, private var db: FirebaseFirestore) : Fragment() {
     private lateinit var adapter: ClientAdapter
@@ -66,20 +65,23 @@ class ClientsFragment(private var currentUser: FirebaseUser, private var db: Fir
 
             docRef.get()
                 .addOnSuccessListener { document ->
-                    clientIds = document.get("clients") as ArrayList<String>
+                    clientIds = document.get("ids") as ArrayList<String>
                     log("firebase complete")
                 }
                 .addOnFailureListener { exception ->
                     Toast.makeText(context, exception.message, Toast.LENGTH_LONG).show()
                 }.await()
 
-            clientIds.forEach{ id ->
-                log("Foreach")
-                val client = db.collection("clients").document(id).get().await().toObject(Client::class.java)!!
-                client.id = id
-                clients.add(client)
-            }
-
+                try{
+                    clientIds.forEach { id ->
+                        log("Foreach")
+                        val client = db.collection("clients").document(id).get().await().toObject(Client::class.java)!!
+                        client.id = id
+                        clients.add(client)
+                    }
+                }catch(e: Exception){
+                    log(e.message.toString())
+                }
             withContext(Dispatchers.Main) {
                 populateList(clients)
             }
