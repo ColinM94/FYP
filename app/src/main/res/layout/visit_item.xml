@@ -11,7 +11,7 @@
 
     <TextView
             android:id="@+id/textview_visititem_name"
-            android:layout_width="104dp"
+            android:layout_width="98dp"
             android:layout_height="match_parent"
             android:textAppearance="?attr/textAppearanceListItem" />
 

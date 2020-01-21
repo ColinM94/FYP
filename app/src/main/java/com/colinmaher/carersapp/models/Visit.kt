@@ -5,10 +5,11 @@ import java.io.Serializable
 
 data class Visit(
     var id: String = "",
-    var name: String = "",
     var clientId: String = "",
     var userId: String = "",
-    var clockInTime: Timestamp? = null,
-    var clockOutTime: Timestamp? = null,
-    var startTime: Timestamp? = null,
-    var endTime: Timestamp? = null) : Serializable
+    var clockInTime: String = "",
+    var clockOutTime: String = "",
+    var startDate: String = "",
+    var startTime: String = "",
+    var endDate: String = "",
+    var endTime: String = "") : Serializable

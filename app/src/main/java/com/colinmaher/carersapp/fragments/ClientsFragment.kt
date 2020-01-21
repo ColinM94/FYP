@@ -66,7 +66,6 @@ class ClientsFragment(private var currentUser: FirebaseUser, private var db: Fir
             docRef.get()
                 .addOnSuccessListener { document ->
                     clientIds = document.get("ids") as ArrayList<String>
-                    log("firebase complete")
                 }
                 .addOnFailureListener { exception ->
                     Toast.makeText(context, exception.message, Toast.LENGTH_LONG).show()
@@ -74,12 +73,14 @@ class ClientsFragment(private var currentUser: FirebaseUser, private var db: Fir
 
                 try{
                     clientIds.forEach { id ->
-                        log("Foreach")
+                        // TODO: Fix Client Class
                         val client = db.collection("clients").document(id).get().await().toObject(Client::class.java)!!
+
                         client.id = id
                         clients.add(client)
                     }
                 }catch(e: Exception){
+                    log("error")
                     log(e.message.toString())
                 }
             withContext(Dispatchers.Main) {

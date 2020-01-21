@@ -41,7 +41,7 @@ class VisitActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Visit Details"
 
-        visitId = intent.getStringExtra("visitId")
+        visitId = intent.getStringExtra("visitId")!!
 
         val id = intent.getStringExtra("id")
 
@@ -76,12 +76,12 @@ class VisitActivity : AppCompatActivity() {
             val dateFormat = SimpleDateFormat(datePattern)
             val timeFormat = SimpleDateFormat(timePattern)
 
-            if (visit != null && client != null) {
+            if (client != null) {
                 withContext(Dispatchers.Main) {
                     clientId = visit.clientId
-                    textview_visit_date.text = dateFormat.format(visit.startTime!!.toDate())
-                    textview_visit_starttime.text = timeFormat.format(visit.startTime!!.toDate())
-                    textview_visit_endtime.text = timeFormat.format(visit.endTime!!.toDate())
+                    textview_visit_date.text = visit.startDate
+                    textview_visit_starttime.text = visit.startTime
+                    textview_visit_endtime.text = visit.endTime
                     textview_visititem_name.text = client.name
                     textview_visit_address.text = "${client.address1}, ${client.address2}, ${client.town}, ${client.county}, ${client.eircode}"
                     //textview_visit_endtime.text = visit.endTime!!.toDate().toString()
@@ -115,7 +115,7 @@ class VisitActivity : AppCompatActivity() {
                 dialogInterface.dismiss()
             }
             // Set the neutral/cancel button click listener
-            mBuilder.setNeutralButton("Cancel") { dialog, which ->
+            mBuilder.setNeutralButton("Cancel") { dialog, _ ->
                 // Do something when click the neutral button
                 dialog.cancel()
             }

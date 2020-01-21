@@ -1,5 +1,5 @@
 package com.colinmaher.carersapp.models
 
 class Visits {
-    val visitIds = listOf<String>()
+    val ids = listOf<String>()
 }

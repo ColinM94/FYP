@@ -11,6 +11,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.android.synthetic.main.activity_signup.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SignupActivity : AppCompatActivity() {
 
@@ -72,10 +75,7 @@ class SignupActivity : AppCompatActivity() {
             return
         }
 
-        Log.d(
-            "Debug",
-            "Attempting to signup with username: $username email: $email & password: $password"
-        )
+        Log.d("Debug", "Attempting to signup with username: $username email: $email & password: $password")
 
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
@@ -85,12 +85,7 @@ class SignupActivity : AppCompatActivity() {
                     Log.d("Debug", "Successfully created user with uid: ${it.result?.user?.uid}")
                     Toast.makeText(this, "Account created", Toast.LENGTH_SHORT).show()
 
-                    //uploadImage()
-
                     saveUserToDatabase()
-
-                    val intent = Intent(this, SigninActivity::class.java)
-                    startActivity(intent)
                 }
             }
             .addOnFailureListener {
@@ -138,9 +133,23 @@ class SignupActivity : AppCompatActivity() {
             "active" to true
         )
 
-        db.collection("users").document(uid).set(data, SetOptions.merge())
+        db.collection("users").document(uid).set(data)
             .addOnSuccessListener {
                 Log.d("Debug", "Successfully saved user to database")
+                val data2 = hashMapOf(
+                    "ids" to arrayListOf<String>()
+                )
+
+                db.collection("connections").document(uid).set(data2)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Account Created", Toast.LENGTH_SHORT).show()
+
+                        val intent = Intent(this, SigninActivity::class.java)
+                        startActivity(intent)
+                    }
+                    .addOnFailureListener{
+                        Log.d("Debug", "${it.message}")
+                    }
             }
             .addOnFailureListener {
                 Log.d("Debug", "${it.message}")

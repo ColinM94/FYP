@@ -1,5 +1,6 @@
 package com.colinmaher.carersapp.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,6 +15,7 @@ import com.colinmaher.carersapp.MainActivity
 import com.colinmaher.carersapp.R
 import com.colinmaher.carersapp.VisitActivity
 import com.colinmaher.carersapp.extensions.log
+import com.colinmaher.carersapp.models.Client
 import com.colinmaher.carersapp.models.Visit
 import com.colinmaher.carersapp.models.Visits
 import com.google.firebase.auth.FirebaseUser
@@ -26,7 +28,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import java.text.SimpleDateFormat
+import kotlin.math.log
 
 class VisitsFragment(private var currentUser: FirebaseUser, private var db: FirebaseFirestore) : Fragment() {
 
@@ -60,14 +64,22 @@ class VisitsFragment(private var currentUser: FirebaseUser, private var db: Fire
 
             val visits = mutableListOf<Visit>()
 
-            // Get current users list of visit Ids.
-            val idList = db.collection("visits").document(currentUser.uid).get().await().toObject(Visits::class.java)
+            try{
+                // Get current users list of visit Ids.
+                val doc = db.collection("visits").document(currentUser.uid).get().await().toObject(Visits::class.java)
 
-            // Get the details of these visits.
-            idList?.visitIds?.forEach{ id ->
-                val visit = db.collection("visitDetails").document(id).get().await().toObject(Visit::class.java)
-                visit!!.id = id
-                visits.add(visit)
+                doc?.ids?.forEach{ id ->
+                    val visit = db.collection("visitDetails").document(id).get().await().toObject(Visit::class.java)
+
+                    if(visit != null){
+                        visit.id = id
+                        visits.add(visit)
+                    }
+                }
+
+            }catch(e: Exception){
+                log("error")
+                log(e.message.toString())
             }
 
             withContext(Dispatchers.Main){
@@ -88,6 +100,7 @@ class VisitsFragment(private var currentUser: FirebaseUser, private var db: Fire
             return ViewHolder(view)
         }
 
+        @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = items[position]
 
@@ -95,7 +108,7 @@ class VisitsFragment(private var currentUser: FirebaseUser, private var db: Fire
             val simpleDateFormat = SimpleDateFormat(pattern)
 
             holder.containerView.textview_visititem_name.text = "Jimmy Ryan"
-            holder.containerView.textview_visititem_location.text = simpleDateFormat.format(item.startTime?.toDate())
+            holder.containerView.textview_visititem_location.text = item.startDate + " : " + item.startTime + " - " + item.endTime
 
 
             holder.containerView.setOnClickListener {
