@@ -39,7 +39,7 @@ class ClientsFragment(private var currentUser: FirebaseUser, private var db: Fir
     private fun populateList(clients : MutableList<Client>){
         adapter = ClientAdapter(this.context!!)
         adapter.replaceItems(clients)
-
+log("clients")
         recyclerview_client.adapter = adapter
 
         // Adds divider line between items.
@@ -59,30 +59,20 @@ class ClientsFragment(private var currentUser: FirebaseUser, private var db: Fir
 
             withContext(Dispatchers.Main){(activity as MainActivity).hideSpinner()}
 
-            val docRef = db.collection("connections").document(currentUser.uid)
-            var clientIds = ArrayList<String>()
+            val conns = db.collection("conns").whereEqualTo("userId", currentUser.uid).get().await()
+
             val clients = mutableListOf<Client>()
 
-            docRef.get()
-                .addOnSuccessListener { document ->
-                    clientIds = document.get("ids") as ArrayList<String>
-                }
-                .addOnFailureListener { exception ->
-                    Toast.makeText(context, exception.message, Toast.LENGTH_LONG).show()
-                }.await()
+            conns.forEach { conn ->
+                log(conn.id)
+                val doc = db.collection("clients").document(conn["clientId"].toString()).get().await()
+                val client = doc.toObject(Client::class.java)!!
+                client.id = doc.id
+                clients.add(client)
+            }
 
-                try{
-                    clientIds.forEach { id ->
-                        // TODO: Fix Client Class
-                        val client = db.collection("clients").document(id).get().await().toObject(Client::class.java)!!
+            log(clients.toString())
 
-                        client.id = id
-                        clients.add(client)
-                    }
-                }catch(e: Exception){
-                    log("error")
-                    log(e.message.toString())
-                }
             withContext(Dispatchers.Main) {
                 populateList(clients)
             }

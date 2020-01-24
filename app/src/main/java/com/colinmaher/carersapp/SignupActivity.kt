@@ -135,21 +135,7 @@ class SignupActivity : AppCompatActivity() {
 
         db.collection("users").document(uid).set(data)
             .addOnSuccessListener {
-                Log.d("Debug", "Successfully saved user to database")
-                val data2 = hashMapOf(
-                    "ids" to arrayListOf<String>()
-                )
 
-                db.collection("connections").document(uid).set(data2)
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "Account Created", Toast.LENGTH_SHORT).show()
-
-                        val intent = Intent(this, SigninActivity::class.java)
-                        startActivity(intent)
-                    }
-                    .addOnFailureListener{
-                        Log.d("Debug", "${it.message}")
-                    }
             }
             .addOnFailureListener {
                 Log.d("Debug", "${it.message}")

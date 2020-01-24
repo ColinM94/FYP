@@ -1,6 +1,5 @@
 package com.colinmaher.carersapp.models
 
-import com.google.firebase.Timestamp
 import java.io.Serializable
 
 data class Visit(
@@ -12,4 +11,5 @@ data class Visit(
     var startDate: String = "",
     var startTime: String = "",
     var endDate: String = "",
-    var endTime: String = "") : Serializable
+    var endTime: String = "",
+    var notes : MutableList<String> = arrayListOf()) : Serializable

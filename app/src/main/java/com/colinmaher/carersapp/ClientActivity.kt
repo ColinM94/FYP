@@ -26,6 +26,7 @@ class ClientActivity : AppCompatActivity() {
         val clientId = intent.getStringExtra("id")
 
         CoroutineScope(Dispatchers.IO).launch {
+            log("ClientId: " + clientId)
             // Get client details.
             val client = db.collection("clients").document(clientId).get().await().toObject(Client::class.java)
 

@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 class MainActivity : AppCompatActivity(){
 
@@ -61,13 +62,22 @@ class MainActivity : AppCompatActivity(){
         val pendingIntent = PendingIntent.getActivity(this, 0, Intent(this, javaClass).addFlags(
             Intent.FLAG_ACTIVITY_SINGLE_TOP), 0)
         val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
-        nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null)
+        try {
+            nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null)
+        }catch(e: Exception){
+
+        }
     }
 
     override fun onPause() {
         super.onPause()
         val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
-        nfcAdapter.disableForegroundDispatch(this)
+        try{
+            nfcAdapter.disableForegroundDispatch(this)
+
+        }catch(e: Exception){
+
+        }
     }
 
     private suspend fun logThread(methodName: String){
@@ -86,6 +96,7 @@ class MainActivity : AppCompatActivity(){
                     .commit()
             }
             "Clients" -> {
+                log("Clients")
                 manager.beginTransaction()
                     .replace(R.id.container, clientsFragment)
                     //.addToBackStack(clientsFragment.toString())

@@ -66,15 +66,12 @@ class VisitsFragment(private var currentUser: FirebaseUser, private var db: Fire
 
             try{
                 // Get current users list of visit Ids.
-                val doc = db.collection("visits").document(currentUser.uid).get().await().toObject(Visits::class.java)
+                var docs = db.collection("visits").whereEqualTo("userId", currentUser.uid).get().await()
 
-                doc?.ids?.forEach{ id ->
-                    val visit = db.collection("visitDetails").document(id).get().await().toObject(Visit::class.java)
-
-                    if(visit != null){
-                        visit.id = id
-                        visits.add(visit)
-                    }
+                docs.forEach{ doc ->
+                    val visit = doc.toObject(Visit::class.java)
+                    visit.id = doc.id
+                    visits.add(visit)
                 }
 
             }catch(e: Exception){
@@ -107,14 +104,13 @@ class VisitsFragment(private var currentUser: FirebaseUser, private var db: Fire
             val pattern = "MM/dd/yyyy | HH:SS"
             val simpleDateFormat = SimpleDateFormat(pattern)
 
-            holder.containerView.textview_visititem_name.text = "Jimmy Ryan"
+            holder.containerView.textview_visititem_name.text = item.clientId
             holder.containerView.textview_visititem_location.text = item.startDate + " : " + item.startTime + " - " + item.endTime
 
 
             holder.containerView.setOnClickListener {
                 val intent = Intent(context, VisitActivity::class.java)
                 intent.putExtra("visitId", item.id)
-                log("ID: ${item.id}")
 
                 context.startActivity(intent)
             }
