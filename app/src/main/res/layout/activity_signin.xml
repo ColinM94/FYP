@@ -1,80 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorAccent"
+        android:background="@color/colorPrimary"
+        android:fitsSystemWindows="true"
         tools:context="com.colinmaher.carersapp.SigninActivity">
 
-    <EditText
-            android:id="@+id/edittext_signin_email"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="150dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/signin_edittext"
-            android:ems="10"
-            android:hint="@string/signup_email"
-            android:inputType="textEmailAddress"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <EditText
-            android:id="@+id/edittext_signin_password"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/signin_edittext"
-            android:ems="10"
-            android:hint="@string/signup_password"
-            android:inputType="textPassword"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            app:layout_constraintEnd_toEndOf="@+id/edittext_signin_email"
-            app:layout_constraintStart_toStartOf="@+id/edittext_signin_email"
-            app:layout_constraintTop_toBottomOf="@+id/edittext_signin_email" />
+        <EditText
+                android:id="@+id/edittext_signin_password"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/signin_edittext"
+                android:ems="10"
+                android:hint="@string/signup_password"
+                android:inputType="textPassword"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                app:layout_constraintEnd_toEndOf="@+id/edittext_signin_email"
+                app:layout_constraintStart_toStartOf="@+id/edittext_signin_email"
+                app:layout_constraintTop_toBottomOf="@+id/edittext_signin_email" />
 
-    <Button
-            android:id="@+id/button_signin_signin"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="64dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="64dp"
-            android:background="@drawable/signin_edittext"
-            android:text="@string/signin_signin"
-            app:layout_constraintEnd_toEndOf="@+id/edittext_signin_password"
-            app:layout_constraintStart_toStartOf="@+id/edittext_signin_password"
-            app:layout_constraintTop_toBottomOf="@+id/edittext_signin_password" />
+        <TextView
+                android:id="@+id/textview_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="64dp"
+                android:text="@string/app_name"
+                android:textColor="@color/background"
+                android:textSize="30sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <ProgressBar
-            android:id="@+id/progressbar_signin_spinner"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="32dp"
-            android:indeterminateTint="@color/red"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_signin_noaccount" />
+        <Button
+                android:id="@+id/button_signin_signin"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="100dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="100dp"
+                android:background="@color/colorAccent"
+                android:backgroundTint="@color/colorAccent"
+                android:text="@string/signin_signin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edittext_signin_password" />
 
-    <TextView
-            android:id="@+id/textview_signin_noaccount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:padding="10dp"
-            android:text="@string/signin_noaccount"
-            android:textColor="@android:color/background_light"
-            app:layout_constraintEnd_toEndOf="@+id/button_signin_signin"
-            app:layout_constraintStart_toStartOf="@+id/button_signin_signin"
-            app:layout_constraintTop_toBottomOf="@+id/button_signin_signin" />
+        <ProgressBar
+                android:id="@+id/progressbar_signin_spinner"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="16dp"
+                android:indeterminateTint="@color/red"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="@+id/textview_title"
+                app:layout_constraintStart_toStartOf="@+id/textview_title"
+                app:layout_constraintTop_toBottomOf="@+id/textview_signin_noaccount" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <EditText
+                android:id="@+id/edittext_signin_email"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/signin_edittext"
+                android:ems="10"
+                android:hint="@string/signup_email"
+                android:inputType="textEmailAddress"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textview_title" />
+
+        <TextView
+                android:id="@+id/textview_signin_noaccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:padding="10dp"
+                android:text="@string/signin_noaccount"
+                android:textColor="@android:color/background_light"
+                app:layout_constraintEnd_toEndOf="@+id/textview_title"
+                app:layout_constraintStart_toStartOf="@+id/textview_title"
+                app:layout_constraintTop_toBottomOf="@+id/button_signin_signin" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

@@ -8,6 +8,9 @@ import android.nfc.NfcAdapter
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.widget.Button
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.colinmaher.carersapp.extensions.log
 import com.colinmaher.carersapp.extensions.toast
@@ -156,8 +159,10 @@ class VisitActivity : AppCompatActivity() {
     }
 
     private fun saveNote(){
-        val notes = visit!!.notes
         val note = edittext_visit_note.text.toString()
+
+        val notes = visit!!.notes
+        //val note = edittext_visit_note.text.toString()
         notes.add(note)
 
         db.collection("visits").document(visit!!.id).update("notes", notes)
@@ -168,7 +173,6 @@ class VisitActivity : AppCompatActivity() {
         for (note in visit!!.notes) {
             textview_visit_notes.append(note + "\n")
         }
-
     }
 
     private fun clockIn() {

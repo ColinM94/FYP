@@ -36,7 +36,11 @@
                     android:value="com.colinmaher.carersapp.MainActivity" />
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".SignupActivity" />
+        <activity android:name=".SignupActivity"
+                android:windowSoftInputMode="adjustPan|adjustResize"
+
+
+                />
         <activity android:name=".SigninActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

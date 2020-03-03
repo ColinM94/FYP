@@ -1,25 +1,30 @@
 package com.colinmaher.carersapp
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.colinmaher.carersapp.models.User
+import com.colinmaher.carersapp.extensions.log
+import com.colinmaher.carersapp.extensions.toast
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
+import kotlinx.android.synthetic.main.activity_signin.*
 import kotlinx.android.synthetic.main.activity_signup.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+
 
 class SignupActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
+
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         Log.d("Debug", "signup activity started")
 
@@ -39,23 +44,6 @@ class SignupActivity : AppCompatActivity() {
 
     // private var selectedPhotoUri: Uri? = null
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        /*
-        if(requestCode == 0 && resultCode == Activity.RESULT_OK && data != null){
-            Log.d("Debug", "Photo was selected")
-
-            selectedPhotoUri = data.data
-
-            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
-
-            circleimageview_signup_selectphoto.setImageBitmap(bitmap)
-            button_signup_selectphoto.alpha = 0f
-        }
-        */
-    }
-
     private fun selectPhoto() {
         Log.d("Debug", "Photo selector")
 
@@ -65,6 +53,15 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun signup() {
+
+        // Hide keyboard.
+        val view: View? = this.currentFocus
+        if (view != null) {
+            val imm: InputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+
         val username = edittext_signup_name.text.toString()
         val email = edittext_signup_email.text.toString()
         val password = edittext_signup_password.text.toString()
@@ -73,6 +70,8 @@ class SignupActivity : AppCompatActivity() {
         if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             return
+        }else{
+            showSpinner()
         }
 
         Log.d("Debug", "Attempting to signup with username: $username email: $email & password: $password")
@@ -80,17 +79,28 @@ class SignupActivity : AppCompatActivity() {
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (!it.isSuccessful) {
+                    hideSpinner()
                     return@addOnCompleteListener
                 } else {
+                    hideSpinner()
                     Log.d("Debug", "Successfully created user with uid: ${it.result?.user?.uid}")
+
+                    val user = it.result?.user
+
+                    verifyEmail(user!!)
+
                     Toast.makeText(this, "Account created", Toast.LENGTH_SHORT).show()
+                    Log.d("Debug", "$it")
+
 
                     saveUserToDatabase()
+                    existingAccount()
                 }
             }
             .addOnFailureListener {
                 Log.d("Debug", "Failed to create user: ${it.message}")
                 Toast.makeText(this, "${it.message}", Toast.LENGTH_SHORT).show()
+                hideSpinner()
             }
     }
 
@@ -147,5 +157,31 @@ class SignupActivity : AppCompatActivity() {
 
         val intent = Intent(this, SigninActivity::class.java)
         startActivity(intent)
+    }
+
+    // Firebase email verification.
+    private fun verifyEmail(user: FirebaseUser)
+    {
+        if(user.isEmailVerified)
+            return
+
+        user?.sendEmailVerification()
+            ?.addOnSuccessListener {
+                toast("Please verify email to log in. Verification email sent to ${user.email}")
+                log("Verification email sent to ${user.email}")
+            }
+            ?.addOnFailureListener {
+                toast("Verification email failed to send. ${it.message}")
+                log("Verification email failed to send ${it.message}")
+            }
+    }
+
+    // Loading spinner.
+    private fun showSpinner(){
+        progressbar_signup_spinner.visibility = View.VISIBLE
+    }
+
+    private fun hideSpinner(){
+        progressbar_signup_spinner.visibility = View.INVISIBLE
     }
 }

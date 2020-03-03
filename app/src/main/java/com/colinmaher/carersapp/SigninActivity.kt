@@ -1,8 +1,10 @@
 package com.colinmaher.carersapp
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 //import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_signin.*
@@ -39,7 +41,13 @@ class SigninActivity : AppCompatActivity(){
     // Handles user signin.
     private fun signin()
     {
-        showSpinner()
+        // Hide keyboard.
+        val view: View? = this.currentFocus
+        if (view != null) {
+            val imm: InputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
 
         val email = edittext_signin_email.text.toString()
         val password = edittext_signin_password.text.toString()
@@ -47,8 +55,9 @@ class SigninActivity : AppCompatActivity(){
         if(email.isEmpty() || password.isEmpty()){
             toast("Please fill in all fields")
             log("All fields not filled")
-
             return
+        }else{
+            showSpinner()
         }
 
         log("Attempting to log in with email: $email & password: $password")
@@ -60,8 +69,8 @@ class SigninActivity : AppCompatActivity(){
                     return@addOnCompleteListener
                 } else if(user?.isEmailVerified == false){
                     hideSpinner()
-                    log("Email not verified")
-                    verifyEmail()
+                    user?.sendEmailVerification()
+                    toast("Please verify email to log in. Verification email sent to ${user.email}")
                 } else {
                     log("Signin Successful: ${it.result?.user?.uid}")
 
@@ -73,25 +82,6 @@ class SigninActivity : AppCompatActivity(){
             .addOnFailureListener {
                 log("${it.message}")
                 toast("${it.message}")
-            }
-    }
-
-
-
-    // Firebase email verification.
-    private fun verifyEmail()
-    {
-        if(user?.isEmailVerified == true)
-            return
-
-        user?.sendEmailVerification()
-            ?.addOnSuccessListener {
-                toast("Please verify email to log in. Verification email sent to ${user.email}")
-                log("Verification email sent to ${user.email}")
-            }
-            ?.addOnFailureListener {
-                toast("Verification email failed to send. ${it.message}")
-                log("Verification email failed to send ${it.message}")
             }
     }
 
