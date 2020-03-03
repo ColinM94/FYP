@@ -23,9 +23,9 @@ class SigninActivity : AppCompatActivity(){
 
         // ---------------------------------------
         //         Test code
-            //edittext_signin_email.setText("colinmaher94@gmail.com")
-            //edittext_signin_password.setText("password")
-            //signin()
+            edittext_signin_email.setText("colinmaher94@gmail.com")
+            edittext_signin_password.setText("password")
+            signin()
         // --------------------------------------
 
 
